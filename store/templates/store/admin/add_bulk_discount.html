@@ -1,0 +1,160 @@
+{% extends "unfold/layouts/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 p-1" {% if is_rtl %}dir="rtl"{% endif %}>
+    
+    {# Header Section (Matches index.html exactly) #}
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mt-4 mb-6 pt-2">
+        <div class="space-y-2">
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {{ title }}
+            </h1>
+            <p class="text-sm text-muted-foreground">
+                {% blocktrans %}You are about to apply a bulk discount to <strong>{{ selected_count }}</strong> selected products.{% endblocktrans %}
+            </p>
+        </div>
+
+        {# Unfold Light/Dark Mode Toggle #}
+        <div class="flex flex-wrap items-center gap-3">
+            <button type="button" class="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-all ms-auto" data-theme-toggle>
+                <span data-theme-icon="light" class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">light_mode</span>
+                    {% trans "Light mode" %}
+                </span>
+                <span data-theme-icon="dark" class="hidden items-center gap-1">
+                    <span class="material-symbols-outlined text-base">dark_mode</span>
+                    {% trans "Dark mode" %}
+                </span>
+            </button>
+        </div>
+    </div>
+
+    {# Form Card (Matches index.html stat-cards/chart-containers) #}
+    <div class="rounded-xl border bg-card p-6 shadow-sm">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold">
+                    {% trans "Discount Details" %}
+                </h2>
+                <p class="text-xs text-muted-foreground mt-1">
+                    {% trans "Configure the percentage and duration" %}
+                </p>
+            </div>
+            <span class="material-symbols-outlined text-indigo-500">sell</span>
+        </div>
+
+        <form method="post" action="" class="space-y-6">
+            {% csrf_token %}
+            
+            {# --- CRITICAL DJANGO ADMIN ACTION FIELDS --- #}
+            <input type="hidden" name="action" value="add_discount" />
+            <input type="hidden" name="apply" value="true" />
+            {% for obj in queryset %}
+                <input type="hidden" name="_selected_action" value="{{ obj.pk }}" />
+            {% endfor %}
+            {# ------------------------------------------- #}
+
+            {% if form.non_field_errors %}
+            <div class="rounded-lg bg-red-50 dark:bg-red-950/50 p-4 border border-red-200 dark:border-red-800">
+                <div class="text-sm text-red-600 dark:text-red-400 font-medium">
+                    {{ form.non_field_errors }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {% for field in form.visible_fields %}
+                    {% if field.name != 'active' %}
+                    <div class="space-y-2">
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium">
+                            {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                        </label>
+                        
+                        <div class="unfold-input-wrapper relative">
+                            {{ field }}
+                        </div>
+                        
+                        {% if field.errors %}
+                        <p class="text-sm text-red-500">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {# Active Checkbox #}
+                <div class="flex items-center space-x-3 pt-6 md:pt-8 {% if is_rtl %}space-x-reverse{% endif %}">
+                    <div class="flex h-5 items-center">
+                        {{ form.active }}
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="{{ form.active.id_for_label }}" class="font-medium cursor-pointer">
+                            {{ form.active.label }}
+                        </label>
+                        <p class="text-xs text-muted-foreground mt-1">{% trans "Enable this discount immediately" %}</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Actions Footer #}
+            <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3">
+                <a href="{% url 'admin:store_product_changelist' %}" class="inline-flex items-center justify-center rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent transition-all shadow-sm">
+                    {% trans "Cancel" %}
+                </a>
+                
+                <button type="submit" style="background-color: #4f46e5; color: #ffffff;" class="inline-flex items-center justify-center rounded-lg border border-transparent px-6 py-2 text-sm font-medium shadow-sm hover:opacity-90 transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                    <span class="material-symbols-outlined text-base mr-2 {% if is_rtl %}ml-2 mr-0{% endif %}">check_circle</span>
+                    {% trans "Apply Bulk Discount" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Styling synced with Unfold's semantic theme variables */
+    .unfold-input-wrapper input[type="text"],
+    .unfold-input-wrapper input[type="number"],
+    .unfold-input-wrapper input[type="datetime-local"] {
+        width: 100%;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border, #e5e7eb);
+        background-color: var(--card, #ffffff);
+        color: var(--foreground, #0f172a);
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        appearance: none;
+    }
+    
+    .unfold-input-wrapper input:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+
+    input[type="checkbox"] {
+        height: 1.25rem;
+        width: 1.25rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--border, #e5e7eb);
+        background-color: var(--card, #ffffff);
+        accent-color: #4f46e5;
+        cursor: pointer;
+    }
+
+    /* Dark Mode specific tweaks for date pickers */
+    @media (prefers-color-scheme: dark) {
+        .dark .unfold-input-wrapper input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) opacity(0.7);
+        }
+        .dark .unfold-input-wrapper input[type="datetime-local"]:hover::-webkit-calendar-picker-indicator {
+            filter: invert(1) opacity(1);
+        }
+    }
+</style>
+{% endblock %}

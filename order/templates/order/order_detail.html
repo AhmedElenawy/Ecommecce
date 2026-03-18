@@ -1,0 +1,200 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate with id=order.id %}Order #{{ id }} - LuxeStore{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<div class="min-h-full pb-10">
+    <div class="max-w-7xl mx-auto pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <a href="{% url 'order:order_list' %}" class="flex items-center justify-center w-10 h-10 bg-white rounded-full border border-slate-200 text-slate-400 hover:text-slate-900 hover:shadow-md transition-all">
+                    <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+                </a>
+                <h1 class="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">{% blocktranslate with id=order.id %}Order #{{ id }}{% endblocktranslate %}</h1>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm">
+                {% if order.status == 'paid' %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{% translate "Paid" %}
+                </span>
+                {% elif order.status == 'pending' %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>{% translate "Pending Payment" %}
+                </span>
+                {% elif order.status == 'shipped' %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>{% translate "Shipped" %}
+                </span>
+                {% elif order.status == 'delivered' %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{% translate "Delivered" %}
+                </span>
+                {% elif order.status == 'cancelled' %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>{% translate "Cancelled" %}
+                </span>
+                {% endif %}
+                <span class="text-sm font-medium text-slate-500 border-l border-slate-200 pl-3">{% blocktranslate with date=order.created|date:"F d, Y" %}Placed {{ date }}{% endblocktranslate %}</span>
+            </div>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 xl:gap-x-16">
+            <section class="lg:col-span-7 xl:col-span-8">
+                <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-6 sm:px-10 py-10" data-aos="fade-up">
+                    <h2 class="text-xl font-black text-slate-900 mb-8 border-b border-slate-100 pb-4">{% translate "Order Items" %}</h2>
+
+                    {% if order.order_items.all %}
+                    <div class="space-y-6">
+                        {% for item in order.order_items.all %}
+                        <div class="flex flex-col sm:flex-row gap-6 pb-6 border-b border-slate-50 last:border-0 last:pb-0">
+                            <div class="flex-shrink-0">
+                                <div class="w-24 h-24 bg-white border border-slate-100 rounded-2xl p-1.5 shadow-sm">
+                                    {% if item.item.image %}
+                                    <img src="{{ item.item.image.url }}" alt="{{ item.item.name }}" class="w-full h-full rounded-xl object-cover">
+                                    {% else %}
+                                    <div class="w-full h-full bg-slate-50 rounded-xl flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0 flex flex-col justify-center">
+                                <h3 class="text-lg font-bold text-slate-900 mb-1">
+                                    <a href="{{ item.item.get_absolute_url }}" class="hover:text-cyan-600 transition-colors">{{ item.item.name }}</a>
+                                </h3>
+                                <p class="text-sm font-medium text-slate-500 mb-3 bg-slate-50 inline-block px-2.5 py-1 rounded-md">{{ item.item.category.name }}</p>
+                                {% if item.item.variant_specifications %}
+                                <div class="flex flex-wrap gap-1.5 mb-3">
+                                    {% for key, value in item.item.variant_specifications.items %}
+                                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ key }}: {{ value }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                                        <span>{% blocktranslate with qty=item.quantity %}Qty: {{ qty }}{% endblocktranslate %}</span>
+                                        <span class="mx-1 text-slate-300">|</span>
+                                        
+                                        {% if item.item.discount_percent > 0 %}
+                                            <span class="text-xs line-through text-slate-400 font-bold"> EGP {{ item.item.base_price }}</span>
+                                            <span class="text-rose-600 font-bold"> EGP {{ item.price }}</span>
+                                            <span class="ml-1 bg-rose-100 text-rose-700 text-[10px] px-1.5 py-0.5 rounded font-black tracking-wider">-{{ item.item.discount_percent }}%</span>
+                                        {% else %}
+                                            <span> EGP {{ item.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-lg font-black text-slate-900"> EGP {{ item.get_total_price }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-10">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4"><svg class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg></div>
+                        <p class="text-slate-500 font-bold">{% translate "No items in this order." %}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="mt-8 lg:mt-0 lg:col-span-5 xl:col-span-4">
+                <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-6 sm:px-8 py-8 sticky top-28" data-aos="fade-left">
+                    <h2 class="text-xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4">{% translate "Order Details" %}</h2>
+
+                    <div class="mb-8 space-y-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{% translate "Delivery Address" %}</p>
+                            <p class="text-sm font-semibold text-slate-700 leading-relaxed">{{ order.shipping_address.address }}<br>{{ order.shipping_address.district }}, {{ order.shipping_address.zone }}<br>{{ order.shipping_address.city }}</p>
+                        </div>
+                        {% if order.shipping_address.mobile %}
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{% translate "Contact" %}</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ order.shipping_address.mobile }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if order.status != 'pending' and order.status != 'cancelled' %}
+                    <div class="mb-8 bg-cyan-50 rounded-[1.5rem] p-5 border border-cyan-100">
+                        <h3 class="text-sm font-black text-cyan-900 mb-5 tracking-wide uppercase">{% translate "Shipment Tracking" %}</h3>
+                        <div class="space-y-4 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-200 before:to-transparent">
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                <div class="flex items-center justify-center w-9 h-9 rounded-full bg-cyan-500 border-4 border-white text-white font-bold text-sm shadow shrink-0 z-10">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <div class="w-[calc(100%-3rem)] ml-4">
+                                    <p class="text-sm font-bold text-cyan-900">{% translate "Confirmed" %}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group {% if order.status == 'shipped' or order.status == 'delivered' %}is-active{% endif %}">
+                                <div class="flex items-center justify-center w-9 h-9 rounded-full {% if order.status == 'shipped' or order.status == 'delivered' %}bg-cyan-500 border-white text-white{% else %}bg-cyan-100 border-white text-cyan-400{% endif %} border-4 font-bold text-sm shadow shrink-0 z-10">
+                                    {% if order.status == 'shipped' or order.status == 'delivered' %}<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>{% else %}2{% endif %}
+                                </div>
+                                <div class="w-[calc(100%-3rem)] ml-4">
+                                    <p class="text-sm font-bold {% if order.status == 'shipped' or order.status == 'delivered' %}text-cyan-900{% else %}text-cyan-600/60{% endif %}">{% translate "Shipped" %}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group {% if order.status == 'delivered' %}is-active{% endif %}">
+                                <div class="flex items-center justify-center w-9 h-9 rounded-full {% if order.status == 'delivered' %}bg-cyan-500 border-white text-white{% else %}bg-cyan-100 border-white text-cyan-400{% endif %} border-4 font-bold text-sm shadow shrink-0 z-10">
+                                    {% if order.status == 'delivered' %}<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>{% else %}3{% endif %}
+                                </div>
+                                <div class="w-[calc(100%-3rem)] ml-4">
+                                    <p class="text-sm font-bold {% if order.status == 'delivered' %}text-cyan-900{% else %}text-cyan-600/60{% endif %}">{% translate "Delivered" %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if order.shipping_address.city %}
+                        <div class="mt-6 pt-5 border-t border-cyan-200">
+                            <a href="#" class="group/btn relative block w-full overflow-hidden bg-white text-cyan-700 border border-cyan-200 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm hover:border-cyan-400 active:scale-[0.98] text-center text-sm">
+                                <div class="absolute inset-0 w-0 bg-cyan-50 transition-all duration-300 ease-out group-hover/btn:w-full"></div>
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                    {% translate "Track Details" %}
+                                </span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                        <dl class="space-y-3 text-sm font-medium text-slate-500">
+                            <div class="flex items-center justify-between">
+                                <dt>{% translate "Subtotal" %}</dt>
+                                <dd class="text-slate-900 font-bold"> EGP {{ order.get_total_price }}</dd>
+                            </div>
+
+                            {% if order.coupon %}
+                            <div class="flex items-center justify-between text-emerald-600">
+                                <dt>
+                                    {% blocktranslate with code=order.coupon.code discount=order.coupon.discount %}Discount ("{{ code }}"){% endblocktranslate %}
+                                </dt>
+                                <dd class="font-bold">- EGP {{ order.discount }}</dd>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex items-center justify-between">
+                                <dt>{% translate "Shipping" %}</dt>
+                                <dd class="text-slate-900 font-bold"> EGP {{ order.shipping_price }}</dd>
+                            </div>
+                            
+                            <div class="border-t border-slate-200 pt-3 mt-3 flex items-center justify-between">
+                                <dt class="text-lg font-black text-slate-900">{% translate "Total Paid" %}</dt>
+                                <dd class="text-xl font-black text-slate-900 tracking-tight"> EGP {{ order.get_total_price_after_discount_shipping }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

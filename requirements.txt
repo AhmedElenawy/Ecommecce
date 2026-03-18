@@ -1,0 +1,36 @@
+asgiref~=3.8
+Django~=5.2
+sqlparse==0.5.0
+python-decouple==3.8
+
+# Background jobs / broker clients
+celery
+redis
+
+# Integrations / HTTP
+requests
+stripe
+
+# Django ecosystem
+django-redis
+django-debug-toolbar
+django-filter
+django-modeltranslation
+django-unfold
+
+# App features
+django-taggit==5.0.1
+Markdown==3.6
+psycopg==3.1.18
+psycopg2-binary
+Pillow
+qrcode
+easy-thumbnails==2.8.5
+django-phonenumber-field==7.3.0
+phonenumbers==8.13.27
+social-auth-app-django==5.4.0
+django-extensions==3.2.3
+werkzeug==3.0.2
+pyOpenSSL==24.1.0
+WeasyPrint==61.2
+

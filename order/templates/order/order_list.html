@@ -1,0 +1,88 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "My Orders - LuxeStore" %}{% endblock %}
+
+{% block content %}
+<div class="min-h-full pb-10">
+    <div class="max-w-7xl mx-auto pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-10">
+            <h1 class="text-3xl font-black tracking-tight text-slate-900 sm:text-5xl">{% translate "My Orders" %}</h1>
+        </div>
+
+        {% if orders %}
+        <div class="space-y-6">
+            {% for order in orders %}
+            <a href="{% url 'order:order_detail' order.id %}"
+                class="block bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
+                <div class="p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                        <div class="flex-1">
+                            <div class="flex flex-wrap items-center gap-3 mb-4">
+                                <h3 class="text-xl font-black text-slate-900">{% blocktranslate with id=order.id %}Order #{{ id }}{% endblocktranslate %}</h3>
+                                
+                                {% if order.status == 'paid' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{% translate "Paid" %}
+                                </span>
+                                {% elif order.status == 'pending' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>{% translate "Pending Payment" %}
+                                </span>
+                                {% elif order.status == 'shipped' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>{% translate "Shipped" %}
+                                </span>
+                                {% elif order.status == 'delivered' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{% translate "Delivered" %}
+                                </span>
+                                {% elif order.status == 'cancelled' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>{% translate "Cancelled" %}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex flex-wrap gap-x-8 gap-y-2 text-sm font-medium text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <p><span class="text-slate-400 font-bold uppercase tracking-wider text-xs mr-2">{% translate "Date" %}</span> <span class="text-slate-900">{{ order.created|date:"M d, Y" }}</span></p>
+                                {% if order.shipping_address.mobile %}
+                                <p><span class="text-slate-400 font-bold uppercase tracking-wider text-xs mr-2">{% translate "Contact" %}</span> <span class="text-slate-900">{{ order.shipping_address.mobile }}</span></p>
+                                {% endif %}
+                                <p class="w-full mt-1"><span class="text-slate-400 font-bold uppercase tracking-wider text-xs mr-2">{% translate "Address" %}</span> <span class="text-slate-900">{{ order.shipping_address.city }}, {{ order.shipping_address.zone }}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="sm:text-end bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border border-slate-100 sm:border-0">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{% translate "Order Total" %}</p>
+                            <p class="text-3xl font-black text-slate-900 tracking-tight"> EGP  {{ order.get_total_price_after_discount_shipping }}</p>
+                            <span class="inline-flex items-center text-sm font-bold text-cyan-600 mt-2 hover:text-cyan-700 transition-colors">
+                                {% translate "View Details" %}
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20 px-6 bg-white rounded-[2.5rem] shadow-sm border border-slate-100" data-aos="fade-up">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            </div>
+            <h3 class="mt-2 text-xl font-black text-slate-900">{% translate "No orders yet" %}</h3>
+            <p class="mt-2 text-base font-medium text-slate-500 mb-8">{% translate "Start shopping to place your first order." %}</p>
+            
+            <a href="{% url 'store:product_list_category' %}"
+                class="group/btn relative inline-flex overflow-hidden bg-slate-900 text-white font-bold py-4 px-10 rounded-full transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]">
+                <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                <span class="relative z-10 tracking-wide text-base">{% translate "Go Shopping" %}</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

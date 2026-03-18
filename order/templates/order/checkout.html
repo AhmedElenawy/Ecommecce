@@ -1,0 +1,145 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Checkout - LuxeStore" %}{% endblock %}
+
+{% block content %}
+<div class="min-h-full pb-10">
+    <div class="max-w-7xl mx-auto pt-6 sm:pt-12 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-2xl font-black tracking-tight text-slate-900 sm:text-5xl mb-6 sm:mb-12">{% translate "Checkout" %}</h1>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
+            <section class="lg:col-span-7 xl:col-span-8">
+                <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-5 sm:px-10 py-8 sm:py-10" data-aos="fade-up">
+                    <form method="post" action="{% url 'order:checkout' %}" id="checkoutForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="city_id" id="id_city_id"><input type="hidden" name="zone_id" id="id_zone_id"><input type="hidden" name="district_id" id="id_district_id"><input type="hidden" name="city" id="id_city_name"><input type="hidden" name="zone" id="id_zone_name"><input type="hidden" name="distinct" id="id_district_name"><input type="hidden" name="shipping_price" id="id_shipping_price" value="5">
+
+                        <div class="space-y-5 sm:space-y-6">
+                            <div>
+                                <label for="{{ form.mobile.id_for_label }}" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Mobile Number" %}</label>
+                                <div>{{ form.mobile }}</div>
+                                {% if form.mobile.errors %}<p class="mt-1 text-xs font-bold text-rose-600">{{ form.mobile.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "City" %}</label>
+                                    <div class="relative">
+                                        <select id="id_city_select" class="appearance-none w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"><option value="">--- {% translate "Select City" %} ---</option></select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></div>
+                                    </div>
+                                    {% if form.city.errors %}<p class="mt-1 text-xs font-bold text-rose-600">{{ form.city.errors.0 }}</p>{% endif %}
+                                </div>
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Zone" %}</label>
+                                    <div class="relative">
+                                        <select id="id_zone_select" class="appearance-none w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm rounded-xl focus:ring-2 disabled:opacity-50 disabled:bg-slate-100" disabled><option value="">--- {% translate "Select Zone" %} ---</option></select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "District" %}</label>
+                                <div class="relative">
+                                    <select id="id_district_select" class="appearance-none w-full px-4 py-3 bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm rounded-xl disabled:opacity-50 disabled:bg-slate-100" disabled><option value="">--- {% translate "Select District" %} ---</option></select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="{{ form.address.id_for_label }}" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Street Address" %}</label>
+                                <div>{{ form.address }}</div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                                <div><label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Building Number" %}</label><div>{{ form.buildingNumber }}</div></div>
+                                <div><label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Floor" %}</label><div>{{ form.floor }}</div></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                                <div><label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Apartment" %}</label><div>{{ form.apartment }}</div></div>
+                                <div><label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 sm:mb-2">{% translate "Landmark (Optional)" %}</label><div>{{ form.secondLine }}</div></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-slate-100">
+                            <button type="submit" class="group/btn relative w-full overflow-hidden bg-slate-900 text-white font-bold py-3.5 sm:py-4 px-8 rounded-2xl transition-all shadow-xl shadow-slate-900/10 hover:shadow-cyan-500/25 active:scale-[0.98]">
+                                <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                                <span class="relative z-10 text-base sm:text-lg tracking-wide flex items-center justify-center gap-2">{% translate "Place Order" %}<svg class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            {% if cart %}
+            <section class="mt-8 lg:mt-0 lg:col-span-5 xl:col-span-4 bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-5 sm:px-8 py-6 sm:py-8 lg:sticky lg:top-28" data-aos="fade-left">
+                <h2 class="text-lg sm:text-xl font-black text-slate-900 mb-4 sm:mb-6 border-b border-slate-100 pb-3 sm:pb-4">{% translate "Order Summary" %}</h2>
+
+                <div class="space-y-4 mb-6 max-h-[30vh] sm:max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                    {% for item in cart %}{% with product=item.item %}
+                    <div class="flex items-center gap-3 sm:gap-4 pb-4 border-b border-slate-50 last:border-0">
+                        <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 bg-white border border-slate-100 rounded-xl p-1 shadow-sm">
+                            {% if product.image %}<img src="{{ product.image.url }}" class="w-full h-full rounded-lg object-cover">
+                            {% else %}<div class="w-full h-full bg-slate-50 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>{% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs sm:text-sm font-bold text-slate-900 truncate">{{ product.name }}</p>
+                            <div class="mt-1 flex items-center gap-1.5 sm:gap-2">
+                                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md inline-block">{% blocktranslate with qty=item.quantity %}Qty: {{ qty }}{% endblocktranslate %}</span>
+                                {% if product.discount_percent > 0 %}<span class="text-[9px] sm:text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">-{{ product.discount_percent }}%</span>{% endif %}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            {% if product.discount_percent > 0 %}
+                                <div class="text-[10px] font-bold text-slate-400 line-through">{{ product.base_price }} EGP</div>
+                                <div class="text-xs sm:text-sm font-black text-rose-600">{{ item.price }} EGP</div>
+                            {% else %}
+                                <div class="text-xs sm:text-sm font-black text-slate-900">{{ item.price }} EGP</div>
+                            {% endif %}
+                            <div class="text-[10px] sm:text-xs font-bold text-slate-400 mt-0.5">{{ item.total_price }} EGP</div>
+                        </div>
+                    </div>
+                    {% endwith %}{% endfor %}
+                </div>
+
+                <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-100">
+                    <dl class="space-y-2 sm:space-y-3 text-xs sm:text-sm font-medium text-slate-500">
+                        <div class="flex items-center justify-between"><dt>{% translate "Subtotal" %}</dt><dd class="text-slate-900 font-bold" id="subtotal">{{ cart.get_total_price }}</dd></div>
+                        {% if cart.coupon_object %}
+                        <div class="flex items-center justify-between text-emerald-600"><dt>{% blocktranslate with code=cart.coupon_object.code discount=cart.coupon_object.discount %}Discount ("{{ code }}"){% endblocktranslate %}</dt><dd class="font-bold" id="discount">-{{ cart.discount }}</dd></div>
+                        {% endif %}
+                        <div class="flex items-center justify-between"><dt>{% translate "Shipping" %}</dt><dd class="text-slate-900 font-bold" id="shipping-price-display">--</dd></div>
+                        <div class="border-t border-slate-200 pt-3 mt-3 flex items-center justify-between">
+                            <dt class="text-sm sm:text-base font-black text-slate-900">{% translate "Total" %}</dt>
+                            <dd class="text-lg sm:text-xl font-black text-slate-900 tracking-tight" id="total-price">{{ cart.get_total_price_after_discount_shipping }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // JS Logic remains exactly the same as previously generated.
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelect = document.getElementById('id_city_select'); const zoneSelect = document.getElementById('id_zone_select'); const districtSelect = document.getElementById('id_district_select'); const hiddenCityId = document.getElementById('id_city_id'); const hiddenCityName = document.getElementById('id_city_name'); const hiddenZoneId = document.getElementById('id_zone_id'); const hiddenZoneName = document.getElementById('id_zone_name'); const hiddenDistrictId = document.getElementById('id_district_id'); const hiddenDistrictName = document.getElementById('id_district_name'); const hiddenShippingPrice = document.getElementById('id_shipping_price'); const shippingPriceDisplay = document.getElementById('shipping-price-display'); const totalPriceDisplay = document.getElementById('total-price'); const subtotalElement = document.getElementById('subtotal'); const discountElement = document.getElementById('discount');
+        const urls = { getCities: "{% url 'order:get_cities' %}", getZones: "{% url 'order:get_zones' %}", getDistricts: "{% url 'order:get_districts' %}", getShippingRate: "{% url 'order:get_shipping_rate' %}" };
+        async function loadCities() { try { const response = await fetch(urls.getCities); const data = await response.json(); if (data.cities) { citySelect.innerHTML = '<option value="">--- {% translate "Select City" %} ---</option>'; const sortedCities = Object.entries(data.cities).sort(([,a], [,b]) => a.localeCompare(b)); for (const [id, name] of sortedCities) { const option = document.createElement('option'); option.value = id; option.textContent = name; citySelect.appendChild(option); } } } catch (error) { console.error('Error loading cities:', error); } }
+        loadCities();
+        citySelect.addEventListener('change', async function() { const cityId = this.value; const cityName = this.options[this.selectedIndex].text; resetSelect(zoneSelect, '--- {% translate "Select Zone" %} ---'); resetSelect(districtSelect, '--- {% translate "Select District" %} ---'); hiddenCityId.value = cityId; hiddenCityName.value = cityId ? cityName : ''; hiddenZoneId.value = ''; hiddenZoneName.value = ''; hiddenDistrictId.value = ''; hiddenDistrictName.value = ''; if (!cityId) return; try { const response = await fetch(`${urls.getZones}?city_id=${cityId}`); const data = await response.json(); if (data.zones) { populateSelect(zoneSelect, data.zones); zoneSelect.disabled = false; } } catch (error) { console.error('Error loading zones:', error); } calculateShipping(cityName); });
+        zoneSelect.addEventListener('change', async function() { const cityId = citySelect.value; const zoneId = this.value; const zoneName = this.options[this.selectedIndex].text; resetSelect(districtSelect, '--- {% translate "Select District" %} ---'); hiddenZoneId.value = zoneId; hiddenZoneName.value = zoneId ? zoneName : ''; hiddenDistrictId.value = ''; hiddenDistrictName.value = ''; if (!cityId || !zoneId) return; try { const response = await fetch(`${urls.getDistricts}?city_id=${cityId}&zone_id=${zoneId}`); const data = await response.json(); if (data.districts) { populateSelect(districtSelect, data.districts); districtSelect.disabled = false; } } catch (error) { console.error('Error loading districts:', error); } });
+        districtSelect.addEventListener('change', function() { const districtId = this.value; const districtName = this.options[this.selectedIndex].text; hiddenDistrictId.value = districtId; hiddenDistrictName.value = districtId ? districtName : ''; });
+        async function calculateShipping(cityName) { shippingPriceDisplay.textContent = "{% translate 'Calculating...' %}"; try { const response = await fetch(`${urls.getShippingRate}?city_name=${encodeURIComponent(cityName)}`); const data = await response.json(); if (data.success) { const rate = parseFloat(data.shipping_rate); hiddenShippingPrice.value = rate.toFixed(2); shippingPriceDisplay.textContent = `${rate.toFixed(2)}`; updateTotal(rate); } else { shippingPriceDisplay.textContent = "{% translate 'Error' %}"; } } catch (error) { shippingPriceDisplay.textContent = "--"; } }
+        function parseLocalizedFloat(text) { if (!text) return 0; let cleaned = text.replace(/[^0-9,.-]/g, ''); let lastComma = cleaned.lastIndexOf(','); let lastDot = cleaned.lastIndexOf('.'); if (lastComma > -1 && lastDot > -1) { if (lastComma > lastDot) { cleaned = cleaned.replace(/\./g, '').replace(',', '.'); } else { cleaned = cleaned.replace(/,/g, ''); } } else if (lastComma > -1) { cleaned = cleaned.replace(',', '.'); } return parseFloat(cleaned) || 0; }
+        function updateTotal(shippingCost) { const shipping = parseFloat(shippingCost) || 0; const subtotal = parseLocalizedFloat(subtotalElement.textContent); let discount = 0; if (discountElement) { discount = Math.abs(parseLocalizedFloat(discountElement.textContent)); } const total = subtotal - discount + shipping; totalPriceDisplay.textContent = `${total.toFixed(2)} EGP`; }
+        function resetSelect(selectElement, defaultText) { selectElement.innerHTML = `<option value="">${defaultText}</option>`; selectElement.disabled = true; }
+        function populateSelect(selectElement, items) { const sortedItems = Object.entries(items).sort(([,a], [,b]) => a.localeCompare(b)); for (const [id, name] of sortedItems) { const option = document.createElement('option'); option.value = id; option.textContent = name; selectElement.appendChild(option); } }
+    });
+</script>
+{% endblock %}
+{% endblock %}

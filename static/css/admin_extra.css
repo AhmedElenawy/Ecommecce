@@ -1,0 +1,27 @@
+/* static/css/admin_extra.css */
+
+/* 1. Force all Left-aligned text to be Right-aligned in RTL mode */
+html[dir="rtl"] .text-left {
+    text-align: right !important;
+}
+
+/* 2. Force all Right-aligned text to be Left-aligned in RTL mode */
+html[dir="rtl"] .text-right {
+    text-align: left !important;
+}
+
+/* 3. General catch-all for tables */
+html[dir="rtl"] td,
+html[dir="rtl"] th {
+    text-align: right !important;
+}
+
+/* 4. Fix specific spacing for Unfold icons in RTL */
+html[dir="rtl"] .mr-2 {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+html[dir="rtl"] .ml-2 {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}

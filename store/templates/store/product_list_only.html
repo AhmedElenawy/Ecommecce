@@ -1,0 +1,22 @@
+{% load static %}
+{% load i18n %}
+
+{% for product in products %}
+  {% include "store/includes/product_card.html" with product=product %}
+{% empty %}
+  {% if not request.GET.list_only %}
+  <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+    <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 mb-1">{% translate "No products found" %}</h3>
+    <p class="text-slate-500 text-sm font-medium text-center">{% translate "Try adjusting your filters or search criteria." %}</p>
+  </div>
+  {% endif %}
+{% endfor %}
+
+<div id="pagination-meta-data" 
+     data-has-next="{{ has_next|lower }}" 
+     data-last-cursor="{{ last_cursor|default:'' }}" 
+     style="display:none;">
+</div>

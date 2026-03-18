@@ -1,0 +1,44 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Error • LuxeStore" %}{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center py-12">
+    <div class="w-full max-w-md mx-auto px-4 sm:px-0">
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 p-8 sm:p-12 text-center relative overflow-hidden" data-aos="fade-up">
+            
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-20 w-64 h-64 rounded-full bg-rose-50 opacity-50 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-[1.5rem] bg-rose-50 border border-rose-100 mb-8 shadow-sm">
+                    <svg class="h-10 w-10 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">{% translate "Error" %}</h1>
+                <p class="text-slate-500 font-medium text-sm mb-8">{% translate "Something went wrong" %}</p>
+
+                <div class="bg-rose-50 border border-rose-100 text-rose-800 px-5 py-4 rounded-2xl text-sm mb-10 shadow-inner">
+                    <p class="font-bold">{{ message }}</p>
+                </div>
+
+                <div class="space-y-4">
+                    <a href="{% url 'authenticate:login' %}"
+                        class="group/btn relative block w-full overflow-hidden bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]">
+                        <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                        <span class="relative z-10 tracking-wide">{% translate "Go to Login" %}</span>
+                    </a>
+
+                    <a href="{% url 'store:product_list_category' %}"
+                        class="block w-full border-2 border-slate-100 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 font-bold py-4 px-8 rounded-2xl transition-all active:scale-[0.98]">
+                        {% translate "Go to Home" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,89 @@
+# LuxeStore Design System & Cursor Rules
+
+You are the Lead Frontend Architect for "LuxeStore," a high-end e-commerce application. Your primary goal is to enforce a polished, "non-AI" aesthetic that strictly mimics the "Emox" visual identity provided in the reference images.
+
+## 1. Core Design DNA (Strict Enforcement)
+
+### Color Palette & Gradients
+* **Primary Brand Gradient:** ALWAYS use `bg-gradient-to-r from-cyan-500 to-blue-600` for primary CTAs, active states, and logos.
+* **Hover Gradient:** `from-cyan-600 to-blue-700`.
+* **Accent/Badge Gradient:** `bg-gradient-to-r from-pink-500 to-rose-500` (Strictly for Cart Counts/Notifications only).
+* **Text Colors:**
+    * Headings: `text-gray-900` or `text-slate-900` (Never pure black).
+    * Body: `text-gray-700`.
+    * Price Emphasis: `text-gray-900` (Bold).
+    * Links/Accents: `text-cyan-600` or `hover:text-cyan-600`.
+
+### Shape & Geometry
+* **Cards & Containers:** `rounded-2xl` (Standard) or `rounded-3xl` (Large containers). NEVER use sharp corners (`rounded-none` or `rounded-sm`) for main elements.
+* **Inputs & Search Bars:** `rounded-full` (Pill shape) is preferred for search bars and single-line inputs.
+* **Buttons:** `rounded-xl` for standard CTAs; `rounded-full` for icon buttons.
+* **Images:** Aspect ratio `aspect-[4/5]` for products (Portrait fashion style).
+
+### Shadows & Depth
+* **Base State:** `shadow-sm` and `border border-gray-100`.
+* **Hover State:** `hover:shadow-xl` and `hover:-translate-y-0.5` (Subtle lift).
+* **Backdrops:** Use `backdrop-blur-md` and `bg-white/95` for sticky headers.
+
+---
+
+## 2. Component Implementation Rules
+
+### A. Navigation & Header
+* **Background:** `bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100`.
+* **Search Bar:** Must be **Pill-Shaped**.
+    * *Classes:* `w-full bg-gray-50 border-gray-200 rounded-full focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500`.
+* **Icons:** Wrap nav icons in a container if they need emphasis or hover states.
+
+### B. Product Cards (The "Luxe" Standard)
+* **Container Structure:**
+    ```html
+    <div class="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden">
+    ```
+* **Image Behavior:**
+    * Wrap image in `overflow-hidden`.
+    * Apply `transform group-hover:scale-105 transition-transform duration-500` to the `<img>` tag.
+* **Price Block:**
+    * Layout: `flex items-baseline gap-2`.
+    * Current Price: `text-lg font-bold text-gray-900`.
+    * Old Price: `text-xs text-gray-400 line-through`.
+    * Discount Badge: `text-[10px] font-medium px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700`.
+
+### C. Buttons (Primary CTA)
+* **Classes:**
+    ```html
+    class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 transform hover:-translate-y-0.5"
+    ```
+* **Logic:** If disabled, switch to `bg-gray-200 text-gray-400 cursor-not-allowed shadow-none`.
+
+### D. Inputs & Forms
+* **Background:** Always `bg-gray-50` (Light gray), NOT white, to contrast with white cards.
+* **Border:** `border-gray-200`.
+* **Focus:** `focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500`.
+* **Structure:** Use `flex-col` with `gap-1.5` for label/input grouping.
+
+---
+
+## 3. Layout & Spacing (Responsive)
+
+* **Page Background:** `bg-gray-50` (Essential for card contrast).
+* **Container:** `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`.
+* **Grid Systems:**
+    * **Product Grid:** `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6`.
+* **Vertical Rhythm:** Use `py-12` or `py-16` for section spacing.
+
+---
+
+## 4. "Anti-Patterns" (What NOT to do)
+
+* ❌ **NO** standard Bootstrap blue (`bg-blue-500`).
+* ❌ **NO** boxy inputs (`rounded-sm` or default browser styles).
+* ❌ **NO** square product images (Use Portrait 4:5).
+* ❌ **NO** pure black backgrounds (`bg-black`). Use `bg-slate-900` or `bg-gray-900`.
+* ❌ **NO** cramped spacing. If in doubt, add more padding (`p-6` or `p-8`).
+
+## 5. Tailwind Configuration Assumptions
+Assume `tailwind.config.js` has these extensions. If suggesting config updates, ensure these are present:
+* `colors.primary`: '#0891b2' (Cyan 600)
+* `colors.secondary`: '#2563eb' (Blue 600)
+* `colors.accent`: '#06b6d4' (Cyan 500)

@@ -1,0 +1,266 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Confirm OTP • LuxeStore" %}{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center py-12">
+    <div class="w-full max-w-md mx-auto px-4 sm:px-0">
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 p-8 sm:p-12 relative overflow-hidden" data-aos="fade-up">
+            
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-cyan-50 opacity-50 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">{% translate "Verify OTP" %}</h1>
+                    <p class="text-slate-500 text-sm font-medium mt-2">{% translate "Enter the code sent to your email" %}</p>
+                </div>
+
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl text-sm font-bold shadow-sm">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="bg-cyan-50 border border-cyan-100 text-cyan-800 px-5 py-4 rounded-2xl shadow-inner mb-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="h-5 w-5 text-cyan-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-sm font-bold text-cyan-900">{% translate "Check your email" %}</p>
+                                <p class="mt-1 text-xs font-medium text-cyan-700">{% translate "We've sent a 6-digit verification code to your email address." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="{{ form.email.name }}" value="{{ form.email.value }}">
+
+                    <div>
+                        <label for="{{ form.otp.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2 text-center">
+                            {% translate "Verification Code" %}
+                        </label>
+                        <input type="text" name="{{ form.otp.name }}" id="{{ form.otp.id_for_label }}"
+                            value="{{ form.otp.value|default:'' }}"
+                            class="w-full px-5 py-5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-center text-3xl font-black tracking-[0.5em] text-slate-900 placeholder:text-slate-300 placeholder:font-normal"
+                            placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autofocus>
+                        {% if form.otp.errors %}
+                        <p class="text-rose-600 text-xs font-bold mt-2 text-center">{{ form.otp.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit"
+                        class="group/btn relative w-full overflow-hidden bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-slate-900/10 hover:shadow-cyan-500/25 active:scale-[0.98]">
+                        <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                        <span class="relative z-10 tracking-wide">{% translate "Verify Code" %}</span>
+                    </button>
+                </form>
+ 
+                <div id="max-attempts-alert" class="mt-6 bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl text-sm hidden shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <p class="text-sm font-bold">{% translate "Too many attempts" %}</p>
+                            <p class="mt-1 text-xs font-medium">{% translate "Please try again in" %} <span id="max-attempts-timer" class="font-black">5:00</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resend-timer-alert" class="mt-6 bg-amber-50 border border-amber-200 text-amber-800 px-5 py-4 rounded-2xl text-sm hidden shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <div>
+                            <p class="text-sm font-bold">{% translate "OTP already sent" %}</p>
+                            <p class="mt-1 text-xs font-medium">{% translate "You can request a new code in" %} <span id="resend-timer" class="font-black">2:00</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm font-medium text-slate-500">
+                        {% translate "Didn't receive the code?" %}
+                        <button type="button" id="resend-btn" class="text-cyan-600 font-bold hover:text-cyan-700 transition-colors ml-1 focus:outline-none">
+                            {% translate "Resend" %}
+                        </button>
+                    </p>
+                    <div id="resend-message" class="mt-3 text-sm hidden font-bold"></div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <a href="{% url 'authenticate:login' %}" class="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+                        {% translate "Back to login" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const resendBtn = document.getElementById('resend-btn');
+    const resendMessage = document.getElementById('resend-message');
+    const maxAttemptsAlert = document.getElementById('max-attempts-alert');
+    const resendTimerAlert = document.getElementById('resend-timer-alert');
+    const maxAttemptsTimer = document.getElementById('max-attempts-timer');
+    const resendTimer = document.getElementById('resend-timer');
+    const otpInput = document.querySelector('input[name*="otp"]');
+    const submitBtn = document.querySelector('button[type="submit"]');
+    
+    let resendTimeout = null;
+    let resendInterval = null;
+    let maxAttemptsInterval = null;
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function restoreTimersFromStorage() {
+        const resendTimestamp = localStorage.getItem('otp_resend_timer');
+        const maxAttemptsTimestamp = localStorage.getItem('otp_max_attempts_timer');
+        const now = Date.now();
+
+        if (resendTimestamp) {
+            const remaining = Math.floor((parseInt(resendTimestamp) - now) / 1000);
+            if (remaining > 0) { startResendTimer(remaining); } 
+            else { localStorage.removeItem('otp_resend_timer'); }
+        }
+
+        if (maxAttemptsTimestamp) {
+            const remaining = Math.floor((parseInt(maxAttemptsTimestamp) - now) / 1000);
+            if (remaining > 0) {
+                startMaxAttemptsTimer(remaining);
+                otpInput.disabled = true;
+                submitBtn.disabled = true;
+            } else {
+                localStorage.removeItem('otp_max_attempts_timer');
+                otpInput.disabled = false;
+                submitBtn.disabled = false;
+            }
+        }
+    }
+
+    function startMaxAttemptsTimer(seconds) {
+        maxAttemptsAlert.classList.remove('hidden');
+        resendBtn.disabled = true;
+        resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        otpInput.disabled = true;
+        submitBtn.disabled = true;
+        
+        localStorage.setItem('otp_max_attempts_timer', Date.now() + (seconds * 1000));
+        if (maxAttemptsInterval) clearInterval(maxAttemptsInterval);
+
+        let remaining = seconds;
+        maxAttemptsTimer.textContent = formatTime(remaining);
+
+        maxAttemptsInterval = setInterval(() => {
+            remaining--;
+            maxAttemptsTimer.textContent = formatTime(remaining);
+
+            if (remaining <= 0) {
+                clearInterval(maxAttemptsInterval);
+                maxAttemptsAlert.classList.add('hidden');
+                resendBtn.disabled = false;
+                resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                otpInput.disabled = false;
+                submitBtn.disabled = false;
+                localStorage.removeItem('otp_max_attempts_timer');
+            }
+        }, 1000);
+    }
+
+    function startResendTimer(seconds) {
+        resendTimerAlert.classList.remove('hidden');
+        resendBtn.disabled = true;
+        resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        localStorage.setItem('otp_resend_timer', Date.now() + (seconds * 1000));
+        if (resendInterval) clearInterval(resendInterval);
+
+        let remaining = seconds;
+        resendTimer.textContent = formatTime(remaining);
+
+        resendInterval = setInterval(() => {
+            remaining--;
+            resendTimer.textContent = formatTime(remaining);
+
+            if (remaining <= 0) {
+                clearInterval(resendInterval);
+                resendTimerAlert.classList.add('hidden');
+                resendBtn.disabled = false;
+                resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                resendBtn.innerHTML = '{% translate "Resend" %}';
+                localStorage.removeItem('otp_resend_timer');
+            }
+        }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        restoreTimersFromStorage();
+        const resendTimestamp = localStorage.getItem('otp_resend_timer');
+        const maxAttemptsTimestamp = localStorage.getItem('otp_max_attempts_timer');
+        if (!resendTimestamp && !maxAttemptsTimestamp) { startResendTimer(120); }
+    });
+
+    resendBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        resendBtn.disabled = true;
+        resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        resendBtn.innerHTML = '<span class="inline-flex items-center"><svg class="animate-spin h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> {% translate "Sending..." %}</span>';
+        
+        try {
+            const response = await fetch("{% url 'authenticate:resend_otp' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+
+            const data = await response.json();
+            if (resendTimeout) clearTimeout(resendTimeout);
+
+            if (data.status === 'sent') {
+                resendMessage.className = 'mt-4 text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl block';
+                resendMessage.textContent = '✓ ' + data.message;
+                startResendTimer(120);
+            } else {
+                resendMessage.className = 'mt-4 text-sm text-rose-600 bg-rose-50 border border-rose-200 px-4 py-2 rounded-xl block';
+                resendMessage.textContent = '✗ ' + data.message;
+                resendBtn.disabled = false;
+                resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                resendBtn.innerHTML = '{% translate "Resend" %}';
+            }
+            resendTimeout = setTimeout(() => { resendMessage.classList.add('hidden'); }, 5000);
+        } catch (error) {
+            console.error('Error:', error);
+            resendMessage.className = 'mt-4 text-sm text-rose-600 bg-rose-50 border border-rose-200 px-4 py-2 rounded-xl block';
+            resendMessage.textContent = '✗ {% translate "An error occurred while resending OTP" %}';
+            resendBtn.disabled = false;
+            resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            resendBtn.innerHTML = '{% translate "Resend" %}';
+            resendTimeout = setTimeout(() => { resendMessage.classList.add('hidden'); }, 5000);
+        }
+    });
+
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const errorElement = document.querySelector('.bg-red-50');
+            if (errorElement && errorElement.textContent.includes('attempts left')) {
+                setTimeout(() => { startMaxAttemptsTimer(300); }, 500);
+            }
+        });
+    }
+</script>
+{% endblock %}

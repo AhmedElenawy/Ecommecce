@@ -1,0 +1,244 @@
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full bg-slate-50" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1" />
+  <title>{% block title %}LuxeStore{% endblock %}</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0891b2',
+            secondary: '#0e7490',
+            accent: '#06b6d4',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            cairo: ['Cairo', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+    [x-cloak] { display: none !important; }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="h-full flex flex-col text-slate-800 bg-slate-50 selection:bg-cyan-100 selection:text-cyan-900 overflow-x-hidden">
+  
+  <div class="fixed top-4 inset-x-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none">
+    <header x-data="{ mobileMenuOpen: false, searchOpen: false }" class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md rounded-[2rem] border border-white/40 shadow-sm shadow-slate-200/50 transition-all duration-300 pointer-events-auto relative">
+      <div class="px-4 md:px-6 py-3">
+        <div class="flex justify-between items-center h-14">
+          
+          <div class="flex-shrink-0 flex items-center">
+            <a href="{% url 'store:product_list_category' %}" class="flex items-center gap-2 sm:gap-3 group focus:outline-none">
+              <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-[1rem] bg-slate-900 flex items-center justify-center text-white shadow-md group-hover:rotate-6 transition-all duration-300 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 relative z-10 {% if LANGUAGE_BIDI %}transform scale-x-[-1]{% endif %}">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+              </div>
+              <span class="font-bold text-lg sm:text-xl tracking-tight text-slate-900">LuxeStore</span>
+            </a>
+          </div>
+
+          <nav class="hidden md:flex items-center gap-x-1">
+            <a href="{% url 'store:product_list_category' %}" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 px-4 py-2 rounded-full text-sm font-semibold transition-all">{% translate "Home" %}</a>
+            <a href="{% url 'store:product_search' %}?query=" class="text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 px-4 py-2 rounded-full text-sm font-semibold transition-all">{% translate "Shop" %}</a>
+          </nav>
+
+          <div class="flex items-center gap-2 sm:gap-3">
+            
+            <div class="hidden md:block">
+              <form action="{% url 'set_language' %}" method="post" class="inline">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.path }}">
+                <button type="submit" name="language" value="{% if LANGUAGE_CODE == 'en' %}ar{% else %}en{% endif %}" class="px-3 py-2 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-cyan-600 transition-all">
+                    {% if LANGUAGE_CODE == 'en' %}عربي{% else %}EN{% endif %}
+                </button>
+              </form>
+            </div>
+
+            <form action="{% url 'store:product_search' %}" method="get" class="hidden md:block relative group">
+              <input type="text" name="query" value="{{ query|default:'' }}" placeholder="{% translate 'Search...' %}"
+                class="w-48 lg:w-56 ps-10 pe-4 py-2 bg-slate-50/50 border border-slate-200 rounded-full text-sm font-medium focus:outline-none focus:bg-white focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all">
+              <div class="absolute start-3 top-2.5 text-slate-400 group-focus-within:text-cyan-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </div>
+            </form>
+
+            <button @click="searchOpen = !searchOpen; mobileMenuOpen = false" class="md:hidden relative p-2 sm:p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-full transition-colors border border-slate-100">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </button>
+
+            {% if user.is_authenticated %}
+            <div class="relative hidden md:block" x-data="{ open: false }" @click.away="open = false">
+              <button @click="open = !open" class="flex items-center gap-2 px-2 py-1 text-slate-700 rounded-full hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                <div class="h-8 w-8 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm shadow-sm">{{ user.first_name|default:user.username|slice:":1"|upper }}</div>
+                <svg class="h-4 w-4 text-slate-400 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+
+              <div x-show="open" x-cloak x-transition.opacity class="absolute end-0 mt-4 w-56 bg-white rounded-[1.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 py-2 z-50">
+                <div class="px-5 py-3 border-b border-slate-50 mb-1 bg-slate-50/50 mx-2 rounded-xl">
+                  <p class="text-sm font-bold text-slate-900 truncate">{{ user.get_full_name|default:user.username }}</p>
+                  <p class="text-xs text-slate-500 mt-0.5 truncate">{{ user.email }}</p>
+                </div>
+                <a href="{% url 'order:order_list' %}" class="block px-5 py-2.5 text-sm font-medium text-slate-700 hover:text-cyan-600 hover:bg-slate-50 transition-colors">{% translate "Orders" %}</a>
+                <div class="border-t border-slate-100 my-1 mx-4"></div>
+                <form method="post" action="{% url 'authenticate:logout' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="w-full text-start px-5 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors">{% translate "Logout" %}</button>
+                </form>
+              </div>
+            </div>
+            {% else %}
+            <div class="hidden md:flex items-center gap-3 ps-2 border-s border-slate-200">
+              <a href="{% url 'authenticate:login' %}" class="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">{% translate "Log in" %}</a>
+              <a href="{% url 'authenticate:register' %}" class="group/btn relative overflow-hidden bg-slate-900 text-white font-bold py-2 px-5 rounded-full transition-all shadow-md hover:shadow-cyan-500/25 active:scale-[0.98]">
+                <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                <span class="relative z-10 text-sm tracking-wide">{% translate "Sign Up" %}</span>
+              </a>
+            </div>
+            {% endif %}
+
+            <div class="relative" x-data="cartDropdown()" @click.away="cartOpen = false">
+              <button @click="toggleCart()" class="relative p-2 sm:p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-full transition-colors border border-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                <span x-show="cartCount > 0" class="absolute top-1 right-1 flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500 border-2 border-white"></span>
+                </span>
+              </button>
+
+              <div x-show="cartOpen" x-cloak x-transition.opacity class="absolute end-0 sm:-mr-0 -mr-12 mt-4 w-[90vw] sm:w-80 max-w-sm bg-white rounded-[1.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 py-3 z-50 max-h-[80vh] overflow-auto">
+                <div x-show="loading" class="px-4 py-10 text-center">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto"></div>
+                </div>
+                <div x-show="!loading" x-html="cartContent"></div>
+              </div>
+            </div>
+
+            <button @click="mobileMenuOpen = !mobileMenuOpen; searchOpen = false" class="md:hidden relative p-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-full transition-colors border border-slate-100">
+                <svg x-show="!mobileMenuOpen" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                <svg x-show="mobileMenuOpen" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            
+          </div>
+        </div>
+      </div>
+
+      <div x-show="searchOpen" x-cloak x-transition.opacity class="md:hidden absolute top-[110%] left-0 w-full bg-white/95 backdrop-blur-md rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-4 z-40">
+        <form action="{% url 'store:product_search' %}" method="get" class="relative group">
+            <input type="text" name="query" value="{{ query|default:'' }}" placeholder="{% translate 'Search products...' %}" class="w-full ps-10 pe-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all">
+            <div class="absolute start-3 top-3 text-slate-400 group-focus-within:text-cyan-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </div>
+        </form>
+      </div>
+
+      <div x-show="mobileMenuOpen" x-cloak x-transition.opacity class="md:hidden absolute top-[110%] left-0 w-full bg-white/95 backdrop-blur-md rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-5 flex flex-col gap-4 z-40">
+        <div class="flex flex-col gap-2">
+            {% if user.is_authenticated %}
+                <div class="px-4 py-3 flex items-center gap-3 bg-cyan-50/50 rounded-xl border border-cyan-100">
+                    <div class="h-10 w-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-base shadow-sm">{{ user.first_name|default:user.username|slice:":1"|upper }}</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900 truncate">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-xs font-medium text-slate-500 truncate">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <a href="{% url 'order:order_list' %}" class="px-4 py-3 font-bold text-center text-cyan-700 bg-cyan-50 hover:bg-cyan-100 rounded-xl transition-colors">{% translate "My Orders" %}</a>
+                    <form method="post" action="{% url 'authenticate:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full px-4 py-3 font-bold text-center text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors">{% translate "Logout" %}</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="{% url 'authenticate:login' %}" class="px-4 py-3 font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-xl text-center transition-colors">{% translate "Log in" %}</a>
+                    <a href="{% url 'authenticate:register' %}" class="group/btn relative overflow-hidden bg-slate-900 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md active:scale-[0.98] text-center">
+                        <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                        <span class="relative z-10 text-sm tracking-wide">{% translate "Sign Up" %}</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <form action="{% url 'set_language' %}" method="post" class="border-t border-slate-100 pt-4">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            <button type="submit" name="language" value="{% if LANGUAGE_CODE == 'en' %}ar{% else %}en{% endif %}" class="w-full px-4 py-3 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                {% if LANGUAGE_CODE == 'en' %}التبديل إلى العربية{% else %}Switch to English{% endif %}
+            </button>
+        </form>
+      </div>
+    </header>
+  </div>
+
+  <main class="flex-grow pt-28 sm:pt-32 pb-16 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 mt-auto rounded-t-[2.5rem] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 text-center">
+        <span class="font-extrabold text-2xl tracking-tight text-slate-900">LuxeStore</span>
+        <p class="text-sm font-medium text-slate-500 mt-1">{% translate "Elevating your shopping experience." %}</p>
+        <div class="mt-8 border-t border-slate-100 pt-8 text-center text-sm font-medium text-slate-400">
+            &copy; {% now "Y" %} LuxeStore. Crafted by Django & Tailwind.
+        </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    function cartDropdown() {
+      return {
+        cartOpen: false, loading: false, cartContent: '', cartCount: 0,
+        async toggleCart() { this.cartOpen = !this.cartOpen; if (this.cartOpen && !this.cartContent) await this.fetchCart(); },
+        async fetchCart() {
+          this.loading = true;
+          try {
+            const response = await fetch('{% url "cart:cart_dropdown_partial" %}');
+            if (response.ok) {
+              const html = await response.text(); this.cartContent = html;
+              const doc = new DOMParser().parseFromString(html, 'text/html');
+              const cartCountText = doc.querySelector('.text-sm.font-bold')?.textContent || '';
+              const match = cartCountText.match(/\d+/); this.cartCount = match ? parseInt(match[0]) : 0;
+            }
+          } catch (error) { this.cartContent = '<div class="px-4 py-8 text-center"><p class="text-sm font-bold text-rose-500">Failed to load cart</p></div>'; } 
+          finally { this.loading = false; }
+        },
+        async refreshCart() { await this.fetchCart(); }
+      }
+    }
+    AOS.init({ once: true, duration: 800, offset: 50, easing: 'ease-out-cubic' });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,117 @@
+<div class="invoice-header">
+    <div class="company-info">
+        <div class="logo-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+        </div>
+        <div>
+            <h1>LuxeStore</h1>
+            <p>Premium E-Commerce</p>
+            <p>contact@luxestore.com</p>
+        </div>
+    </div>
+    <div class="invoice-meta">
+        <h2>INVOICE</h2>
+        <p class="meta-item"><span>Invoice #:</span> <strong>{{ order.id }}</strong></p>
+        <p class="meta-item"><span>Date:</span> <strong>{{ order.created|date:"F d, Y" }}</strong></p>
+        <div class="status-wrapper">
+            {% if order.status == 'paid' %}
+            <span class="status paid"><span class="dot"></span>PAID</span>
+            {% elif order.status == 'pending' %}
+            <span class="status pending"><span class="dot"></span>PENDING</span>
+            {% elif order.status == 'shipped' %}
+            <span class="status shipped"><span class="dot"></span>SHIPPED</span>
+            {% elif order.status == 'delivered' %}
+            <span class="status delivered"><span class="dot"></span>DELIVERED</span>
+            {% elif order.status == 'cancelled' %}
+            <span class="status cancelled"><span class="dot"></span>CANCELLED</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="billing-section">
+    <div class="billing-card">
+        <h3>Bill To</h3>
+        <p class="customer-name">{{ order.user.get_full_name|default:order.user.username }}</p>
+        <p>{{ order.user.email }}</p>
+        {% if order.shipping_address.mobile %}
+        <p>{{ order.shipping_address.mobile }}</p>
+        {% endif %}
+    </div>
+    <div class="billing-card">
+        <h3>Shipping Address</h3>
+        <p class="customer-name">{{ order.shipping_address.address }}</p>
+        <p>{{ order.shipping_address.district }}, {{ order.shipping_address.zone }}</p>
+        <p>{{ order.shipping_address.city }}</p>
+        {% if order.shipping_address.mobile %}
+        <p>Contact: {{ order.shipping_address.mobile }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Category</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-center">Qty</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.order_items.all %}
+            <tr>
+                <td class="item-name">{{ item.item.name }}{% if item.item.variant_specifications %} <span style="display: block; font-size: 10px; color: #64748b; font-weight: 600; margin-top: 2px;">{% for key, value in item.item.variant_specifications.items %}{{ key }}: {{ value }}{% if not forloop.last %} · {% endif %}{% endfor %}</span>{% endif %}</td>
+                <td class="item-category"><span>{{ item.item.category.name }}</span></td>
+                
+                <td class="text-right">
+                    {% if item.item.discount_percent > 0 %}
+                        <span style="text-decoration: line-through; color: #94a3b8; font-size: 11px; display: block; font-weight: bold;"> EGP {{ item.item.base_price }}</span>
+                        <span style="color: #e11d48; font-weight: bold;"> EGP {{ item.price }}</span>
+                    {% else %}
+                        <span style="font-weight: bold;"> EGP {{ item.price }}</span>
+                    {% endif %}
+                </td>
+                
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-right font-bold"> EGP {{ item.get_total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="totals-container">
+    <div class="totals-section">
+        <div class="totals-row subtotal">
+            <span>Subtotal:</span>
+            <span> EGP {{ order.get_total_price }}</span>
+        </div>
+
+        {% if order.coupon %}
+        <div class="totals-row discount">
+            <span>Discount ("{{ order.coupon.code }}"):</span>
+            <span>- EGP {{ order.discount }}</span>
+        </div>
+        {% endif %}
+
+        <div class="totals-row shipping">
+            <span>Shipping:</span>
+            <span> EGP {{ order.shipping_price }}</span>
+        </div>
+        <div class="totals-row total">
+            <span>Total:</span>
+            <span class="amount"> EGP {{ order.get_total_price_after_discount_shipping }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="invoice-footer">
+    <p class="thank-you">Thank you for shopping with LuxeStore!</p>
+    <p>If you have any questions about this invoice, please contact us at <strong>contact@luxestore.com</strong></p>
+    {% if order.payment_id %}
+    <p class="payment-id">Payment ID: {{ order.payment_id }}</p>
+    {% endif %}
+</div>

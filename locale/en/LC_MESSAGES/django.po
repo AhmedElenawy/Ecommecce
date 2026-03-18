@@ -1,0 +1,1627 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-07 13:13+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authenticate/forms.py:24 authenticate/forms.py:82 authenticate/forms.py:102
+#: authenticate/templates/authenticate/login.html:47
+#: authenticate/templates/authenticate/register.html:70
+msgid "Password"
+msgstr ""
+
+#: authenticate/forms.py:29 authenticate/forms.py:104
+#: authenticate/templates/authenticate/register.html:85
+msgid "Confirm Password"
+msgstr ""
+
+#: authenticate/forms.py:43
+msgid "Enter strong password."
+msgstr ""
+
+#: authenticate/forms.py:48
+msgid "Passwords don't match."
+msgstr ""
+
+#: authenticate/forms.py:77
+msgid "This email address is already registered."
+msgstr ""
+
+#: authenticate/forms.py:81 authenticate/templates/authenticate/login.html:34
+#: authenticate/templates/authenticate/register.html:57
+msgid "Email"
+msgstr ""
+
+#: authenticate/forms.py:87
+#: authenticate/templates/authenticate/reset_form.html:46
+msgid "Email Address"
+msgstr ""
+
+#: authenticate/forms.py:93
+msgid "This email address is not registered."
+msgstr ""
+
+#: authenticate/forms.py:97
+msgid "OTP"
+msgstr ""
+
+#: authenticate/forms.py:115
+msgid "Password doesn't match"
+msgstr ""
+
+#: authenticate/otp.py:23
+msgid "you have already requested an otp. please wait for 2 minutes"
+msgstr ""
+
+#: authenticate/otp.py:66
+msgid "OTP has been expired or dont exist"
+msgstr ""
+
+#: authenticate/otp.py:71
+msgid "OTP has expired"
+msgstr ""
+
+#: authenticate/otp.py:74
+msgid "you reach maximum attempts. please try after 5 minutes"
+msgstr ""
+
+#: authenticate/otp.py:77
+msgid "OTP has been already verified"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:5
+msgid "Confirm OTP • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:16
+msgid "Verify OTP"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:17
+msgid "Enter the code sent to your email"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:35
+msgid "Check your email"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:36
+msgid "We've sent a 6-digit verification code to your email address."
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:45
+msgid "Verification Code"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:59
+msgid "Verify Code"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:69
+msgid "Too many attempts"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:70
+msgid "Please try again in"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:82
+msgid "OTP already sent"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:83
+msgid "You can request a new code in"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:90
+msgid "Didn't receive the code?"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:92
+#: authenticate/templates/authenticate/confirm_otp.html:204
+#: authenticate/templates/authenticate/confirm_otp.html:242
+#: authenticate/templates/authenticate/confirm_otp.html:251
+msgid "Resend"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:101
+#: authenticate/templates/authenticate/reset_form.html:67
+msgid "Back to login"
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:221
+msgid "Sending..."
+msgstr ""
+
+#: authenticate/templates/authenticate/confirm_otp.html:248
+msgid "An error occurred while resending OTP"
+msgstr ""
+
+#: authenticate/templates/authenticate/error.html:5
+msgid "Error • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/error.html:21
+#: order/templates/order/checkout.html:305
+msgid "Error"
+msgstr ""
+
+#: authenticate/templates/authenticate/error.html:22
+msgid "Something went wrong"
+msgstr ""
+
+#: authenticate/templates/authenticate/error.html:32
+msgid "Go to Login"
+msgstr ""
+
+#: authenticate/templates/authenticate/error.html:37
+msgid "Go to Home"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:5
+msgid "Login • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:19
+msgid "Welcome Back"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:20
+msgid "Login to your account"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:59
+msgid "Forgot password?"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:66
+msgid "Sign In"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:75
+#: authenticate/templates/authenticate/register.html:105
+msgid "Or continue with"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:87
+msgid "Sign in with Google"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:92
+msgid "Don't have an account?"
+msgstr ""
+
+#: authenticate/templates/authenticate/login.html:94
+msgid "Register now"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:5
+msgid "Set New Password • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:16
+msgid "Set New Password"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:17
+msgid "Create a strong password for your account"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:35
+msgid "OTP Verified Successfully!"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:36
+msgid "Now you can set a new password for your account."
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:45
+msgid "New Password"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:60
+msgid "Confirm New Password"
+msgstr ""
+
+#: authenticate/templates/authenticate/new_password.html:73
+#: authenticate/templates/authenticate/reset_form.html:19
+msgid "Reset Password"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:5
+msgid "Register • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:16
+#: authenticate/templates/authenticate/register.html:98
+msgid "Create Account"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:17
+msgid "Join LuxeStore today"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:32
+msgid "First Name"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:44
+msgid "Last Name"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:117
+msgid "Sign up with Google"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:122
+msgid "Already have an account?"
+msgstr ""
+
+#: authenticate/templates/authenticate/register.html:124
+#: store/templates/store/base.html:144
+msgid "Log in"
+msgstr ""
+
+#: authenticate/templates/authenticate/reset_form.html:5
+msgid "Reset Password • LuxeStore"
+msgstr ""
+
+#: authenticate/templates/authenticate/reset_form.html:20
+msgid "Enter your email to receive OTP"
+msgstr ""
+
+#: authenticate/templates/authenticate/reset_form.html:38
+msgid "Password Reset Instructions"
+msgstr ""
+
+#: authenticate/templates/authenticate/reset_form.html:39
+msgid "We'll send you a one-time password (OTP) to verify your identity."
+msgstr ""
+
+#: authenticate/templates/authenticate/reset_form.html:60
+msgid "Send OTP"
+msgstr ""
+
+#: authenticate/urls.py:8
+msgid "login/"
+msgstr ""
+
+#: authenticate/urls.py:9
+msgid "register/"
+msgstr ""
+
+#: authenticate/urls.py:10
+msgid "logout/"
+msgstr ""
+
+#: authenticate/urls.py:11
+msgid "password-reset/"
+msgstr ""
+
+#: authenticate/urls.py:12
+msgid "confirm-otp/"
+msgstr ""
+
+#: authenticate/urls.py:13
+msgid "new-password/"
+msgstr ""
+
+#: authenticate/urls.py:14
+msgid "resend-otp/"
+msgstr ""
+
+#: authenticate/views.py:62
+msgid "Invalid email or password"
+msgstr ""
+
+#: authenticate/views.py:103 authenticate/views.py:154
+msgid "unauthorized"
+msgstr ""
+
+#: authenticate/views.py:131 authenticate/views.py:169
+msgid "Email not found"
+msgstr ""
+
+#: authenticate/views.py:140
+msgid "email not found"
+msgstr ""
+
+#: authenticate/views.py:143
+msgid "email resent"
+msgstr ""
+
+#: authenticate/views.py:159
+msgid "User not found"
+msgstr ""
+
+#: cart/forms.py:9 order/models.py:69
+msgid "quantity"
+msgstr ""
+
+#: cart/forms.py:13
+msgid "replace"
+msgstr ""
+
+#: cart/templates/cart/detail.html:5
+msgid "Shopping Cart - LuxeStore"
+msgstr ""
+
+#: cart/templates/cart/detail.html:10
+msgid "Shopping Cart"
+msgstr ""
+
+#: cart/templates/cart/detail.html:14
+msgid "Items in your shopping cart"
+msgstr ""
+
+#: cart/templates/cart/detail.html:57
+#, python-format
+msgid "Unit Price: $%(price)s"
+msgstr ""
+
+#: cart/templates/cart/detail.html:60
+#, python-format
+msgid "Total: $%(total)s"
+msgstr ""
+
+#: cart/templates/cart/detail.html:68
+msgid "Remove item"
+msgstr ""
+
+#: cart/templates/cart/detail.html:76
+#, python-format
+msgid "Quantity, %(name)s"
+msgstr ""
+
+#: cart/templates/cart/detail.html:99
+msgid "In stock"
+msgstr ""
+
+#: cart/templates/cart/detail.html:102
+msgid "Out of Stock (will be removed on checkout)"
+msgstr ""
+
+#: cart/templates/cart/detail.html:115
+msgid "Cart is empty"
+msgstr ""
+
+#: cart/templates/cart/detail.html:116
+msgid "Start shopping to add items to your cart."
+msgstr ""
+
+#: cart/templates/cart/detail.html:121 order/templates/order/order_list.html:82
+msgid "Go Shopping"
+msgstr ""
+
+#: cart/templates/cart/detail.html:131 order/templates/order/checkout.html:125
+msgid "Order Summary"
+msgstr ""
+
+#: cart/templates/cart/detail.html:140
+#, python-format
+msgid "\"%(code)s\" applied"
+msgstr ""
+
+#: cart/templates/cart/detail.html:142
+msgid "Remove"
+msgstr ""
+
+#: cart/templates/cart/detail.html:147
+msgid "Promo code"
+msgstr ""
+
+#: cart/templates/cart/detail.html:151
+#: store/templates/store/product_list.html:159
+msgid "Apply"
+msgstr ""
+
+#: cart/templates/cart/detail.html:159
+#: cart/templates/cart/partials/cart_dropdown.html:53
+#: order/templates/order/checkout.html:168
+#: order/templates/order/order_detail.html:165
+#: payment/templates/payment/process.html:84
+msgid "Subtotal"
+msgstr ""
+
+#: cart/templates/cart/detail.html:166
+#, python-format
+msgid "Discount (%(discount)s%% off)"
+msgstr ""
+
+#: cart/templates/cart/detail.html:173 order/templates/order/checkout.html:182
+#: order/templates/order/order_detail.html:179
+#: payment/templates/payment/process.html:98
+msgid "Shipping"
+msgstr ""
+
+#: cart/templates/cart/detail.html:178 order/templates/order/checkout.html:187
+msgid "Total"
+msgstr ""
+
+#: cart/templates/cart/detail.html:188
+msgid "Proceed to Checkout"
+msgstr ""
+
+#: cart/templates/cart/detail.html:200
+msgid "Complete Your Order"
+msgstr ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:6
+#, python-format
+msgid ""
+"\n"
+"    <p class=\"text-sm font-bold text-slate-900\">Shopping Cart (%(counter)s "
+"item)</p>\n"
+"    "
+msgid_plural ""
+"\n"
+"    <p class=\"text-sm font-bold text-slate-900\">Shopping Cart (%(counter)s "
+"items)</p>\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:34
+#, python-format
+msgid "Qty: %(quantity)s"
+msgstr ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:59
+msgid "View Cart & Checkout"
+msgstr ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:69
+msgid "Your cart is empty"
+msgstr ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:70
+msgid "Looks like you haven't added anything yet."
+msgstr ""
+
+#: cart/templates/cart/partials/cart_dropdown.html:75
+msgid "Start Shopping"
+msgstr ""
+
+#: cart/urls.py:9
+msgid "add/<int:product_id>"
+msgstr ""
+
+#: cart/urls.py:10
+msgid "remove/<int:product_id>"
+msgstr ""
+
+#: cart/urls.py:11
+msgid "dropdown"
+msgstr ""
+
+#: coupon/forms.py:6
+msgid "Code"
+msgstr ""
+
+#: coupon/models.py:11
+msgid "code"
+msgstr ""
+
+#: coupon/models.py:12 store/models.py:12 store/models.py:26
+msgid "discount"
+msgstr ""
+
+#: coupon/models.py:13 store/models.py:13
+msgid "valid from"
+msgstr ""
+
+#: coupon/models.py:14 store/models.py:14
+msgid "valid to"
+msgstr ""
+
+#: coupon/models.py:15 store/models.py:15 store/models.py:83
+msgid "active"
+msgstr ""
+
+#: coupon/models.py:16
+msgid "usage limit"
+msgstr ""
+
+#: coupon/models.py:17
+msgid "max discount"
+msgstr ""
+
+#: coupon/models.py:28
+msgid "Coupon is not active yet"
+msgstr ""
+
+#: coupon/models.py:30
+msgid "Coupon is expired"
+msgstr ""
+
+#: coupon/models.py:32
+msgid "Coupon is not active"
+msgstr ""
+
+#: coupon/models.py:34
+msgid "Coupon usage limit reached"
+msgstr ""
+
+#: coupon/models.py:38
+msgid "coupon"
+msgstr ""
+
+#: coupon/models.py:39
+msgid "coupons"
+msgstr ""
+
+#: coupon/models.py:44
+msgid "used at"
+msgstr ""
+
+#: coupon/models.py:47
+msgid "coupon usage"
+msgstr ""
+
+#: coupon/models.py:48
+msgid "coupon usages"
+msgstr ""
+
+#: coupon/urls.py:8
+msgid "apply_coupon/"
+msgstr ""
+
+#: coupon/urls.py:9
+msgid "remove_coupon/"
+msgstr ""
+
+#: coupon/views.py:18
+msgid "Coupon applied successfully"
+msgstr ""
+
+#: coupon/views.py:20
+msgid "Coupon does not exist"
+msgstr ""
+
+#: ecommerce/settings.py:226
+msgid "English"
+msgstr "إنجليزي"
+
+#: ecommerce/settings.py:227
+msgid "Arabic"
+msgstr "عربي"
+
+#: ecommerce/settings.py:270
+msgid "LuxeStore Admin"
+msgstr ""
+
+#: ecommerce/settings.py:271
+msgid "LuxeStore"
+msgstr ""
+
+#: ecommerce/settings.py:272 store/commentss.py:113
+msgid "Dashboard"
+msgstr ""
+
+#: ecommerce/settings.py:297
+msgid "Models"
+msgstr ""
+
+#: ecommerce/settings.py:301 store/templates/store/product_list.html:5
+#: templates/admin/index.html:97
+msgid "Products"
+msgstr ""
+
+#: ecommerce/settings.py:305 store/templates/store/base.html:130
+#: templates/admin/index.html:524
+msgid "Orders"
+msgstr ""
+
+#: ecommerce/settings.py:309 store/templates/store/base.html:75
+msgid "Categories"
+msgstr ""
+
+#: ecommerce/settings.py:313 store/templates/store/product_list.html:140
+msgid "Tags"
+msgstr ""
+
+#: ecommerce/settings.py:317
+msgid "Discounts"
+msgstr ""
+
+#: ecommerce/settings.py:321
+msgid "Coupons"
+msgstr ""
+
+#: ecommerce/settings.py:325
+msgid "File Center"
+msgstr ""
+
+#: ecommerce/settings.py:329 store/commentss.py:122
+msgid "Users"
+msgstr ""
+
+#: ecommerce/settings.py:333
+msgid "Groups"
+msgstr ""
+
+#: ecommerce/settings.py:339
+msgid "Languages"
+msgstr ""
+
+#: ecommerce/urls.py:37
+msgid "cart/"
+msgstr ""
+
+#: ecommerce/urls.py:38
+msgid "order/"
+msgstr ""
+
+#: ecommerce/urls.py:39
+msgid "payment/"
+msgstr ""
+
+#: ecommerce/urls.py:40
+msgid "coupon/"
+msgstr ""
+
+#: ecommerce/urls.py:41
+msgid "authenticate/"
+msgstr ""
+
+#: order/admin.py:26
+msgid "Generate Invoices"
+msgstr ""
+
+#: order/admin.py:66
+msgid "Export CSV"
+msgstr ""
+
+#: order/admin.py:70
+msgid "Generate Invoice"
+msgstr ""
+
+#: order/admin.py:71
+msgid "Invoice"
+msgstr ""
+
+#: order/admin.py:78
+msgid "Payment ID"
+msgstr ""
+
+#: order/admin.py:84
+msgid "Total Price"
+msgstr ""
+
+#: order/dashboard.py:43 order/models.py:99 templates/admin/index.html:93
+msgid "Pending"
+msgstr ""
+
+#: order/dashboard.py:44 order/templates/order/order_detail.html:22
+#: order/templates/order/order_list.html:28 templates/admin/index.html:89
+msgid "Paid"
+msgstr ""
+
+#: order/dashboard.py:45 order/templates/order/order_detail.html:30
+#: order/templates/order/order_detail.html:134
+#: order/templates/order/order_list.html:36
+msgid "Shipped"
+msgstr ""
+
+#: order/dashboard.py:46 order/templates/order/order_detail.html:34
+#: order/templates/order/order_detail.html:143
+#: order/templates/order/order_list.html:40
+msgid "Delivered"
+msgstr ""
+
+#: order/dashboard.py:47 order/templates/order/order_detail.html:38
+#: order/templates/order/order_list.html:44
+msgid "Cancelled"
+msgstr ""
+
+#: order/forms.py:55 order/templates/order/checkout.html:67
+msgid "District"
+msgstr ""
+
+#: order/forms.py:56
+msgid "Second Line"
+msgstr ""
+
+#: order/forms.py:57 order/templates/order/checkout.html:86
+msgid "Building Number"
+msgstr ""
+
+#: order/models.py:23 order/models.py:103
+msgid "status"
+msgstr ""
+
+#: order/models.py:24
+msgid "paid"
+msgstr ""
+
+#: order/models.py:25 store/models.py:88
+msgid "created"
+msgstr ""
+
+#: order/models.py:26 store/models.py:89
+msgid "updated"
+msgstr ""
+
+#: order/models.py:27
+msgid "payment ID"
+msgstr ""
+
+#: order/models.py:28
+msgid "session ID"
+msgstr ""
+
+#: order/models.py:32
+msgid "discount amount"
+msgstr ""
+
+#: order/models.py:34
+msgid "shipping price"
+msgstr ""
+
+#: order/models.py:35
+msgid "shipping status"
+msgstr ""
+
+#: order/models.py:37
+msgid "order"
+msgstr ""
+
+#: order/models.py:38
+msgid "orders"
+msgstr ""
+
+#: order/models.py:70 store/models.py:77
+msgid "price"
+msgstr ""
+
+#: order/models.py:73
+msgid "order item"
+msgstr ""
+
+#: order/models.py:74
+msgid "order items"
+msgstr ""
+
+#: order/models.py:83
+msgid "mobile"
+msgstr ""
+
+#: order/models.py:84
+msgid "address"
+msgstr ""
+
+#: order/models.py:85
+msgid "city"
+msgstr ""
+
+#: order/models.py:86
+msgid "city ID"
+msgstr ""
+
+#: order/models.py:87
+msgid "zone"
+msgstr ""
+
+#: order/models.py:88
+msgid "zone ID"
+msgstr ""
+
+#: order/models.py:89
+msgid "district"
+msgstr ""
+
+#: order/models.py:90
+msgid "district ID"
+msgstr ""
+
+#: order/models.py:91
+msgid "second line"
+msgstr ""
+
+#: order/models.py:92
+msgid "building number"
+msgstr ""
+
+#: order/models.py:93
+msgid "floor"
+msgstr ""
+
+#: order/models.py:94
+msgid "apartment"
+msgstr ""
+
+#: order/models.py:100
+msgid "Completed"
+msgstr ""
+
+#: order/models.py:101 store/models.py:31 store/models.py:73
+msgid "name"
+msgstr ""
+
+#: order/models.py:107
+msgid "file"
+msgstr ""
+
+#: order/models.py:113
+msgid "PDF file"
+msgstr ""
+
+#: order/models.py:114
+msgid "PDF files"
+msgstr ""
+
+#: order/templates/order/checkout.html:5
+msgid "Checkout - LuxeStore"
+msgstr ""
+
+#: order/templates/order/checkout.html:10
+msgid "Checkout"
+msgstr ""
+
+#: order/templates/order/checkout.html:14
+msgid "Checkout information"
+msgstr ""
+
+#: order/templates/order/checkout.html:31
+msgid "Mobile Number"
+msgstr ""
+
+#: order/templates/order/checkout.html:41
+msgid "City"
+msgstr ""
+
+#: order/templates/order/checkout.html:44
+#: order/templates/order/checkout.html:227
+msgid "Select City"
+msgstr ""
+
+#: order/templates/order/checkout.html:54
+msgid "Zone"
+msgstr ""
+
+#: order/templates/order/checkout.html:57
+#: order/templates/order/checkout.html:243
+msgid "Select Zone"
+msgstr ""
+
+#: order/templates/order/checkout.html:70
+#: order/templates/order/checkout.html:244
+#: order/templates/order/checkout.html:269
+msgid "Select District"
+msgstr ""
+
+#: order/templates/order/checkout.html:79
+msgid "Street Address"
+msgstr ""
+
+#: order/templates/order/checkout.html:90
+msgid "Floor"
+msgstr ""
+
+#: order/templates/order/checkout.html:97
+msgid "Apartment"
+msgstr ""
+
+#: order/templates/order/checkout.html:101
+msgid "Landmark (Optional)"
+msgstr ""
+
+#: order/templates/order/checkout.html:112
+msgid "Place Order"
+msgstr ""
+
+#: order/templates/order/checkout.html:145
+#: order/templates/order/order_detail.html:73
+#: payment/templates/payment/process.html:44
+#, python-format
+msgid "Qty: %(qty)s"
+msgstr ""
+
+#: order/templates/order/checkout.html:175
+#: order/templates/order/order_detail.html:172
+#: payment/templates/payment/process.html:91
+#, python-format
+msgid "Discount (\"%(code)s\")"
+msgstr ""
+
+#: order/templates/order/checkout.html:295
+msgid "Calculating..."
+msgstr ""
+
+#: order/templates/order/order_detail.html:5
+#, python-format
+msgid "Order #%(id)s - LuxeStore"
+msgstr ""
+
+#: order/templates/order/order_detail.html:16
+#: order/templates/order/order_list.html:24
+#, python-format
+msgid "Order #%(id)s"
+msgstr ""
+
+#: order/templates/order/order_detail.html:26
+#: order/templates/order/order_list.html:32
+msgid "Pending Payment"
+msgstr ""
+
+#: order/templates/order/order_detail.html:41
+#, python-format
+msgid "Placed %(date)s"
+msgstr ""
+
+#: order/templates/order/order_detail.html:48
+msgid "Order Items"
+msgstr ""
+
+#: order/templates/order/order_detail.html:93
+msgid "No items in this order."
+msgstr ""
+
+#: order/templates/order/order_detail.html:101
+msgid "Order Details"
+msgstr ""
+
+#: order/templates/order/order_detail.html:105
+#: payment/templates/payment/process.html:64
+msgid "Delivery Address"
+msgstr ""
+
+#: order/templates/order/order_detail.html:110
+#: order/templates/order/order_list.html:52
+#: payment/templates/payment/process.html:69
+#: store/templates/store/base.html:236
+msgid "Contact"
+msgstr ""
+
+#: order/templates/order/order_detail.html:118
+msgid "Shipment Tracking"
+msgstr ""
+
+#: order/templates/order/order_detail.html:125
+msgid "Confirmed"
+msgstr ""
+
+#: order/templates/order/order_detail.html:154
+msgid "Track Details"
+msgstr ""
+
+#: order/templates/order/order_detail.html:184
+msgid "Total Paid"
+msgstr ""
+
+#: order/templates/order/order_list.html:5
+msgid "My Orders - LuxeStore"
+msgstr ""
+
+#: order/templates/order/order_list.html:11
+msgid "My Orders"
+msgstr ""
+
+#: order/templates/order/order_list.html:50
+msgid "Date"
+msgstr ""
+
+#: order/templates/order/order_list.html:54
+msgid "Address"
+msgstr ""
+
+#: order/templates/order/order_list.html:59
+msgid "Order Total"
+msgstr ""
+
+#: order/templates/order/order_list.html:62
+#: store/templates/store/includes/product_card.html:40
+msgid "View Details"
+msgstr ""
+
+#: order/templates/order/order_list.html:76
+msgid "No orders yet"
+msgstr ""
+
+#: order/templates/order/order_list.html:77
+msgid "Start shopping to place your first order."
+msgstr ""
+
+#: order/urls.py:8
+msgid "checkout/"
+msgstr ""
+
+#: order/urls.py:9
+msgid "order_list/"
+msgstr ""
+
+#: order/urls.py:10
+msgid "order_detail/<int:order_id>/"
+msgstr ""
+
+#: order/urls.py:11
+msgid "generate_invoice/<int:order_id>/"
+msgstr ""
+
+#: order/views.py:38
+#, python-format
+msgid "Out of stock: %(product)s"
+msgstr ""
+
+#: order/views.py:57
+#, python-format
+msgid "Error applying coupon: %(error)s"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:5
+msgid "Payment Canceled - LuxeStore"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:21
+msgid "Payment Canceled"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:23
+msgid "Your payment was canceled. No charges have been made to your account."
+msgstr ""
+
+#: payment/templates/payment/canceled.html:27
+msgid "What happened?"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:31
+msgid "You canceled the payment process before completion"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:35
+msgid "Your order has been saved and you can complete payment later"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:39
+msgid "If you need assistance, please contact our support team"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:48
+#: payment/templates/payment/completed.html:48
+msgid "View My Orders"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:52
+#: payment/templates/payment/completed.html:52
+msgid "Continue Shopping"
+msgstr ""
+
+#: payment/templates/payment/completed.html:5
+msgid "Payment Completed - LuxeStore"
+msgstr ""
+
+#: payment/templates/payment/completed.html:21
+msgid "Payment Successful!"
+msgstr ""
+
+#: payment/templates/payment/completed.html:23
+msgid ""
+"Thank you for your purchase. Your order has been confirmed and will be "
+"processed shortly."
+msgstr ""
+
+#: payment/templates/payment/completed.html:27
+msgid "What's Next?"
+msgstr ""
+
+#: payment/templates/payment/completed.html:31
+msgid "You will receive an email confirmation shortly"
+msgstr ""
+
+#: payment/templates/payment/completed.html:35
+msgid "Your order will be prepared and shipped within 2-3 business days"
+msgstr ""
+
+#: payment/templates/payment/completed.html:39
+msgid "You can track your order status in your account"
+msgstr ""
+
+#: payment/templates/payment/process.html:5
+msgid "Payment - LuxeStore"
+msgstr ""
+
+#: payment/templates/payment/process.html:10
+msgid "Complete Your Payment"
+msgstr ""
+
+#: payment/templates/payment/process.html:14
+msgid "Order information"
+msgstr ""
+
+#: payment/templates/payment/process.html:18
+#, python-format
+msgid "Order #%(order_id)s"
+msgstr ""
+
+#: payment/templates/payment/process.html:19
+#, python-format
+msgid "Placed on %(date)s"
+msgstr ""
+
+#: payment/templates/payment/process.html:79
+msgid "Payment Summary"
+msgstr ""
+
+#: payment/templates/payment/process.html:103
+msgid "Total to Pay"
+msgstr ""
+
+#: payment/templates/payment/process.html:116
+msgid "Proceed to Payment"
+msgstr ""
+
+#: payment/templates/payment/process.html:123
+msgid "Secure payment powered by Stripe"
+msgstr ""
+
+#: payment/urls.py:9
+msgid "proccess"
+msgstr ""
+
+#: payment/urls.py:10
+msgid "completed"
+msgstr ""
+
+#: payment/urls.py:11
+msgid "canceled"
+msgstr ""
+
+#: store/admin.py:22 store/models.py:80
+msgid "stock"
+msgstr ""
+
+#: store/admin.py:26
+msgid "Low stock (< 7)"
+msgstr ""
+
+#: store/commentss.py:12
+msgid "My site"
+msgstr ""
+
+#: store/commentss.py:108
+msgid "Navigation"
+msgstr ""
+
+#: store/commentss.py:137
+msgid "Your custom title"
+msgstr ""
+
+#: store/models.py:27
+msgid "discounts"
+msgstr ""
+
+#: store/models.py:32 store/models.py:74
+msgid "slug"
+msgstr ""
+
+#: store/models.py:33 store/models.py:86
+msgid "image"
+msgstr ""
+
+#: store/models.py:40
+msgid "category"
+msgstr ""
+
+#: store/models.py:41
+msgid "categories"
+msgstr ""
+
+#: store/models.py:75
+msgid "description"
+msgstr ""
+
+#: store/models.py:81 templates/admin/index.html:332
+msgid "sales"
+msgstr ""
+
+#: store/models.py:82
+msgid "available"
+msgstr ""
+
+#: store/models.py:125
+msgid "product"
+msgstr ""
+
+#: store/models.py:126
+msgid "products"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:4
+msgid "Django site admin"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:16
+#, python-format
+msgid ""
+"You are about to apply a bulk discount to <strong>%(selected_count)s</"
+"strong> selected products."
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:25
+#: templates/admin/index.html:109
+msgid "Light mode"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:29
+#: templates/admin/index.html:113
+msgid "Dark mode"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:40
+msgid "Discount Details"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:43
+msgid "Configure the percentage and duration"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:96
+msgid "Enable this discount immediately"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:104
+msgid "Cancel"
+msgstr ""
+
+#: store/templates/store/admin/add_bulk_discount.html:109
+msgid "Apply Bulk Discount"
+msgstr ""
+
+#: store/templates/store/base.html:73
+msgid "Home"
+msgstr ""
+
+#: store/templates/store/base.html:74
+msgid "Shop"
+msgstr ""
+
+#: store/templates/store/base.html:95
+msgid "Search..."
+msgstr ""
+
+#: store/templates/store/base.html:127
+msgid "Profile"
+msgstr ""
+
+#: store/templates/store/base.html:136
+msgid "Logout"
+msgstr ""
+
+#: store/templates/store/base.html:148
+msgid "Sign Up"
+msgstr ""
+
+#: store/templates/store/base.html:174
+msgid "Loading cart..."
+msgstr ""
+
+#: store/templates/store/base.html:230
+msgid "Elevating your shopping experience."
+msgstr ""
+
+#: store/templates/store/base.html:233
+msgid "About"
+msgstr ""
+
+#: store/templates/store/base.html:234
+msgid "Privacy"
+msgstr ""
+
+#: store/templates/store/base.html:235
+msgid "Terms"
+msgstr ""
+
+#: store/templates/store/base.html:276
+msgid "Failed to load cart"
+msgstr ""
+
+#: store/templates/store/category_list.html:5
+msgid "Home - LuxeStore"
+msgstr ""
+
+#: store/templates/store/category_list.html:16
+msgid "New Arrival"
+msgstr ""
+
+#: store/templates/store/category_list.html:18
+msgid "Summer Collection 2025"
+msgstr ""
+
+#: store/templates/store/category_list.html:21
+msgid ""
+"Discover the latest trends in fashion and accessories. Premium quality, "
+"exclusive designs."
+msgstr ""
+
+#: store/templates/store/category_list.html:27
+msgid "Shop Now"
+msgstr ""
+
+#: store/templates/store/category_list.html:36
+msgid "Shop by Category"
+msgstr ""
+
+#: store/templates/store/category_list.html:71 templates/admin/index.html:290
+msgid "View all"
+msgstr ""
+
+#: store/templates/store/category_list.html:91
+msgid "Subscribe to our newsletter"
+msgstr ""
+
+#: store/templates/store/category_list.html:92
+msgid "Get the latest updates on new products and upcoming sales."
+msgstr ""
+
+#: store/templates/store/category_list.html:94
+msgid "Enter your email"
+msgstr ""
+
+#: store/templates/store/category_list.html:100
+msgid "Subscribe"
+msgstr ""
+
+#: store/templates/store/includes/product_card.html:63
+msgid "In Stock"
+msgstr ""
+
+#: store/templates/store/includes/product_card.html:68
+#: store/templates/store/product_detail.html:36
+msgid "Out of Stock"
+msgstr ""
+
+#: store/templates/store/includes/product_card.html:91
+msgid "Add"
+msgstr ""
+
+#: store/templates/store/includes/product_card.html:98
+msgid "Sold Out"
+msgstr ""
+
+#: store/templates/store/product_detail.html:33
+msgid "In stock & ready to ship"
+msgstr ""
+
+#: store/templates/store/product_detail.html:48
+msgid "Save"
+msgstr ""
+
+#: store/templates/store/product_detail.html:59
+msgid "Description"
+msgstr ""
+
+#: store/templates/store/product_detail.html:72
+msgid "Quantity"
+msgstr ""
+
+#: store/templates/store/product_detail.html:90
+msgid "Add to cart"
+msgstr ""
+
+#: store/templates/store/product_detail.html:99
+msgid "Share this product"
+msgstr ""
+
+#: store/templates/store/product_detail.html:111
+msgid "You Might Also Like"
+msgstr ""
+
+#: store/templates/store/product_list.html:77
+msgid "Our Collection"
+msgstr ""
+
+#: store/templates/store/product_list.html:79
+msgid "Browse our curated collection of high-quality products."
+msgstr ""
+
+#: store/templates/store/product_list.html:84
+msgid "All Products"
+msgstr ""
+
+#: store/templates/store/product_list.html:108
+msgid "Filters"
+msgstr ""
+
+#: store/templates/store/product_list.html:119
+msgid "Price Range"
+msgstr ""
+
+#: store/templates/store/product_list.html:122
+msgid "Min"
+msgstr ""
+
+#: store/templates/store/product_list.html:126
+msgid "Max"
+msgstr ""
+
+#: store/templates/store/product_list.html:133
+msgid "Category"
+msgstr ""
+
+#: store/templates/store/product_list.html:147
+msgid "Availability"
+msgstr ""
+
+#: store/templates/store/product_list.html:150
+msgid "In Stock Only"
+msgstr ""
+
+#: store/templates/store/product_list.html:164
+msgid "Clear"
+msgstr ""
+
+#: store/templates/store/product_list.html:178
+msgid "Loading more..."
+msgstr ""
+
+#: store/templates/store/product_list.html:185
+msgid "You've reached the end of our collection."
+msgstr ""
+
+#: store/templates/store/product_list_only.html:12
+msgid "No products found"
+msgstr ""
+
+#: store/templates/store/product_list_only.html:13
+msgid "Try adjusting your filters or search criteria."
+msgstr ""
+
+#: store/urls.py:11
+msgid "products/"
+msgstr ""
+
+#: store/urls.py:12
+msgid "search/"
+msgstr ""
+
+#: store/urls.py:13
+msgid "product/<int:product_id>/"
+msgstr ""
+
+#: templates/admin/index.html:73
+msgid "Store Analytics Dashboard"
+msgstr ""
+
+#: templates/admin/index.html:76
+msgid "Monitor orders, revenue and products performance in real time."
+msgstr ""
+
+#: templates/admin/index.html:85
+msgid "All Orders"
+msgstr ""
+
+#: templates/admin/index.html:101
+msgid "Low Stock"
+msgstr ""
+
+#: templates/admin/index.html:123
+msgid "Total Orders"
+msgstr ""
+
+#: templates/admin/index.html:127
+msgid "Paid orders"
+msgstr ""
+
+#: templates/admin/index.html:132
+msgid "Total Revenue"
+msgstr ""
+
+#: templates/admin/index.html:140
+msgid "Avg Order Value"
+msgstr ""
+
+#: templates/admin/index.html:148
+msgid "Pending Orders"
+msgstr ""
+
+#: templates/admin/index.html:152
+msgid "Awaiting processing"
+msgstr ""
+
+#: templates/admin/index.html:157
+msgid "Active Products"
+msgstr ""
+
+#: templates/admin/index.html:161
+#, python-format
+msgid "Total stock: %(total_stock)s"
+msgstr ""
+
+#: templates/admin/index.html:172
+msgid "Revenue Trends"
+msgstr ""
+
+#: templates/admin/index.html:175
+msgid "Last 7 days performance"
+msgstr ""
+
+#: templates/admin/index.html:181
+msgid "Revenue trends chart"
+msgstr ""
+
+#: templates/admin/index.html:190
+msgid "Order Status"
+msgstr ""
+
+#: templates/admin/index.html:193
+msgid "Current order distribution"
+msgstr ""
+
+#: templates/admin/index.html:199
+msgid "Order status chart"
+msgstr ""
+
+#: templates/admin/index.html:211
+msgid "Top Selling Products"
+msgstr ""
+
+#: templates/admin/index.html:214
+msgid "Products by sales volume"
+msgstr ""
+
+#: templates/admin/index.html:220
+msgid "Top selling products chart"
+msgstr ""
+
+#: templates/admin/index.html:228
+msgid "Best Performers"
+msgstr ""
+
+#: templates/admin/index.html:229
+msgid "Top ranked items"
+msgstr ""
+
+#: templates/admin/index.html:232
+msgid "View products"
+msgstr ""
+
+#: templates/admin/index.html:244
+#, python-format
+msgid "%(product.sales)s sales"
+msgstr ""
+
+#: templates/admin/index.html:257
+msgid "No product data available yet."
+msgstr ""
+
+#: templates/admin/index.html:269
+msgid "Orders per Day"
+msgstr ""
+
+#: templates/admin/index.html:270
+msgid "Last 7 days"
+msgstr ""
+
+#: templates/admin/index.html:273
+msgid "View all orders"
+msgstr ""
+
+#: templates/admin/index.html:277
+msgid "Orders per day chart"
+msgstr ""
+
+#: templates/admin/index.html:288
+msgid "Low Stock Alert"
+msgstr ""
+
+#: templates/admin/index.html:301
+msgid "All products well stocked!"
+msgstr ""
+
+#: templates/admin/index.html:333
+msgid "Revenue"
+msgstr ""

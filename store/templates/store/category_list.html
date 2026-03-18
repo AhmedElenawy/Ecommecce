@@ -1,0 +1,97 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Home - LuxeStore" %}{% endblock %}
+
+{% block content %}
+<div class="relative bg-slate-900 rounded-[2.5rem] overflow-hidden mb-12 sm:mb-16 shadow-2xl shadow-slate-900/20 border border-slate-800" data-aos="fade-up">
+  <div class="absolute inset-0">
+    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" class="w-full h-full object-cover opacity-40 mix-blend-overlay" alt="Hero Background">
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto py-24 px-6 sm:py-32 sm:px-12 lg:px-16 text-center sm:text-start flex flex-col sm:items-start items-center">
+    <span class="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-cyan-300 text-sm font-bold tracking-wider uppercase mb-6">{% translate "New Arrival" %}</span>
+    <h1 class="text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">{% translate "Summer Collection 2025" %}</h1>
+    <p class="mt-2 text-lg sm:text-xl text-slate-300 max-w-2xl text-center sm:text-start font-medium leading-relaxed">{% translate "Discover the latest trends in fashion and accessories. Premium quality, exclusive designs." %}</p>
+    <div class="mt-10">
+      <a href="{% url 'store:product_search' %}?query=" class="group/btn relative inline-flex overflow-hidden bg-white text-slate-900 font-bold py-4 px-10 rounded-full transition-all shadow-lg active:scale-[0.98]">
+        <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+        <span class="relative z-10 group-hover/btn:text-white transition-colors duration-300 tracking-wide">{% translate "Shop Now" %}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% if category_list %}
+<div class="mb-12 sm:mb-16" data-aos="fade-up">
+  <div class="flex items-center justify-between mb-8 sm:mb-10">
+    <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">{% translate "Shop by Category" %}</h2>
+  </div>
+  
+  <div class="-mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div class="flex gap-4 sm:gap-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory items-stretch [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {% for category in category_list %}
+        <div class="flex-none w-[40vw] sm:w-[14rem] lg:w-[15rem] snap-start">
+            <a href="{% url 'store:product_list' %}?category={{ category.id }}" class="group relative flex flex-col items-center justify-center p-5 sm:p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden z-10 h-full">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-50/50 to-blue-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div class="relative w-16 h-16 sm:w-24 sm:h-24 mb-4 rounded-2xl bg-slate-50 shadow-inner flex items-center justify-center overflow-hidden z-10 border border-slate-100/80 group-hover:border-cyan-200 transition-colors duration-500">
+                {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-700">
+                    <span class="text-white text-lg sm:text-2xl font-black uppercase tracking-widest">{{ category.name|slice:":2" }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <span class="relative z-10 text-sm sm:text-base font-bold text-slate-700 group-hover:text-slate-900 text-center transition-colors">{{ category.name }}</span>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover:w-1/2 rounded-t-full"></div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="space-y-12 sm:space-y-16">
+  {% for tag in tags %}
+  <section data-aos="fade-up" data-aos-delay="100">
+    <div class="flex items-center justify-between mb-6 sm:mb-8">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">{{ tag.name }}</h2>
+      <a href="{% url 'store:product_list' %}?tags={{ tag.id }}" class="text-sm font-bold text-cyan-600 hover:text-cyan-500 flex items-center gap-1.5 group bg-cyan-50 hover:bg-cyan-100 px-4 py-2 rounded-full transition-colors shrink-0">
+        {% translate "View all" %}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </div>
+
+    <div class="-mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="flex gap-4 sm:gap-6 overflow-x-auto pb-10 pt-2 snap-x snap-mandatory items-stretch [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {% for product in tag.products %}
+            <div class="flex-none w-[65vw] sm:w-[16rem] lg:w-[17.5rem] snap-start">
+                {% include "store/includes/product_card.html" with product=product %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+<div class="mt-12 sm:mt-16 bg-white rounded-[2.5rem] p-10 sm:p-16 lg:p-20 text-center border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden" data-aos="fade-up">
+  <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-gradient-to-br from-cyan-100 to-blue-50 opacity-50 blur-3xl pointer-events-none"></div>
+  <div class="relative z-10">
+      <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">{% translate "Subscribe to our newsletter" %}</h2>
+      <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">{% translate "Get the latest updates on new products and upcoming sales." %}</p>
+      <form class="mt-10 flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
+        <input type="email" placeholder="{% translate 'Enter your email' %}" class="flex-1 min-w-0 px-6 py-4 text-base text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium shadow-inner" required>
+        <button type="submit" class="group/btn relative overflow-hidden bg-slate-900 text-white font-bold py-4 px-8 rounded-full transition-all shadow-md hover:shadow-cyan-500/25 active:scale-[0.98] shrink-0">
+          <div class="absolute inset-0 w-0 bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+          <span class="relative z-10 tracking-wide">{% translate "Subscribe" %}</span>
+        </button>
+      </form>
+  </div>
+</div>
+{% endblock %}

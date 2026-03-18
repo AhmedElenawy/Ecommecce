@@ -1,0 +1,568 @@
+{% extends "unfold/layouts/base.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+{# Chart.js for graphs #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Custom dashboard styling */
+    .dashboard-gradient {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container {
+        position: relative;
+        background: linear-gradient(to bottom, rgba(99, 102, 241, 0.03), transparent);
+    }
+
+    .metric-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .metric-badge.positive {
+        background: rgba(34, 197, 94, 0.1);
+        color: rgb(34, 197, 94);
+    }
+
+    .metric-badge.negative {
+        background: rgba(239, 68, 68, 0.1);
+        color: rgb(239, 68, 68);
+    }
+
+    .metric-badge.neutral {
+        background: rgba(59, 130, 246, 0.1);
+        color: rgb(59, 130, 246);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6 p-1" {% if is_rtl %}dir="rtl"{% endif %}>
+    {# Header with title, description, quick links and theme toggle #}
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mt-4 mb-6 pt-2">
+        <div class="space-y-2">
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {% trans "Store Analytics Dashboard" %}
+            </h1>
+            <p class="text-sm text-muted-foreground">
+                {% trans "Monitor orders, revenue and products performance in real time." %}
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            {# Quick filter buttons - redirect to admin with filters #}
+            {% if admin_urls %}
+            <a href="{{ admin_urls.orders_all }}" class="inline-flex items-center gap-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/50 px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-all">
+                <span class="material-symbols-outlined text-base">receipt_long</span>
+                {% trans "All Orders" %}
+            </a>
+            <a href="{{ admin_urls.orders_paid }}" class="inline-flex items-center gap-2 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/50 px-3 py-2 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50 transition-all">
+                <span class="material-symbols-outlined text-base">payments</span>
+                {% trans "Paid" %}
+            </a>
+            <a href="{{ admin_urls.orders_pending }}" class="inline-flex items-center gap-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 px-3 py-2 text-sm font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-all">
+                <span class="material-symbols-outlined text-base">pending_actions</span>
+                {% trans "Pending" %}
+            </a>
+            <a href="{{ admin_urls.products_all }}" class="inline-flex items-center gap-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/50 px-3 py-2 text-sm font-medium text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-all">
+                <span class="material-symbols-outlined text-base">inventory_2</span>
+                {% trans "Products" %}
+            </a>
+            <a href="{{ admin_urls.products_low_stock }}" class="inline-flex items-center gap-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 px-3 py-2 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50 transition-all">
+                <span class="material-symbols-outlined text-base">warning</span>
+                {% trans "Low Stock" %}
+            </a>
+            {% endif %}
+
+            {# Unfold light / dark mode toggle #}
+            <button type="button" class="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-accent transition-all ms-auto" data-theme-toggle>
+                <span data-theme-icon="light" class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">light_mode</span>
+                    {% trans "Light mode" %}
+                </span>
+                <span data-theme-icon="dark" class="hidden items-center gap-1">
+                    <span class="material-symbols-outlined text-base">dark_mode</span>
+                    {% trans "Dark mode" %}
+                </span>
+            </button>
+        </div>
+    </div>
+
+    {# Primary KPI cards #}
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mt-8 mb-8">
+        <a href="{{ admin_urls.orders_paid|default:'#' }}" class="stat-card rounded-xl border bg-card p-6 shadow-sm block hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{% trans "Total Orders" %}</p>
+                <span class="material-symbols-outlined text-indigo-500">shopping_bag</span>
+            </div>
+            <p class="mt-4 text-3xl font-bold text-indigo-600">{{ orders_count|default:0 }}</p>
+            <p class="mt-2 text-xs text-muted-foreground">{% trans "Paid orders" %}</p>
+        </a>
+
+        <div class="stat-card rounded-xl border bg-card p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{% trans "Total Revenue" %}</p>
+                <span class="material-symbols-outlined text-green-500">payments</span>
+            </div>
+            <p class="mt-4 text-3xl font-bold text-green-600">{{ total_revenue|floatformat:2|default:0 }}</p>
+        </div>
+
+        <div class="stat-card rounded-xl border bg-card p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{% trans "Avg Order Value" %}</p>
+                <span class="material-symbols-outlined text-purple-500">receipt_long</span>
+            </div>
+            <p class="mt-4 text-3xl font-bold text-purple-600">{{ average_order_value|floatformat:2 }}</p>
+        </div>
+
+        <a href="{{ admin_urls.orders_pending|default:'#' }}" class="stat-card rounded-xl border bg-card p-6 shadow-sm block hover:border-amber-300 dark:hover:border-amber-700 transition-colors">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{% trans "Pending Orders" %}</p>
+                <span class="material-symbols-outlined text-orange-500">pending_actions</span>
+            </div>
+            <p class="mt-4 text-3xl font-bold text-orange-600">{{ pending_orders_count|default:0 }}</p>
+            <p class="mt-2 text-xs text-muted-foreground">{% trans "Awaiting processing" %}</p>
+        </a>
+
+        <a href="{{ admin_urls.products_all|default:'#' }}" class="stat-card rounded-xl border bg-card p-6 shadow-sm block hover:border-pink-300 dark:hover:border-pink-700 transition-colors">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{% trans "Active Products" %}</p>
+                <span class="material-symbols-outlined text-pink-500">inventory_2</span>
+            </div>
+            <p class="mt-4 text-3xl font-bold text-pink-600">{{ active_products_count|default:0 }}</p>
+            <p class="mt-2 text-xs text-muted-foreground">{% blocktrans %}Total stock: {{ total_stock }}{% endblocktrans %}</p>
+        </a>
+    </div>
+
+    {# Revenue & Order Status Charts Row #}
+    <div class="grid gap-6 lg:grid-cols-2 mt-8 mb-8">
+        {# Chart: Revenue Trends (Line Chart) #}
+        <div class="chart-container rounded-xl border bg-card p-6 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold">
+                        {% trans "Revenue Trends" %}
+                    </h2>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        {% trans "Last 7 days performance" %}
+                    </p>
+                </div>
+                <span class="material-symbols-outlined text-green-500">show_chart</span>
+            </div>
+            <div class="h-80">
+                <canvas id="revenueTrendsChart" aria-label="{% trans 'Revenue trends chart' %}" role="img"></canvas>
+            </div>
+        </div>
+
+        {# Chart: Order Status Breakdown (Doughnut Chart) #}
+        <div class="chart-container rounded-xl border bg-card p-6 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold">
+                        {% trans "Order Status" %}
+                    </h2>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        {% trans "Current order distribution" %}
+                    </p>
+                </div>
+                <span class="material-symbols-outlined text-indigo-500">pie_chart</span>
+            </div>
+            <div class="h-80">
+                <canvas id="orderStatusChart" aria-label="{% trans 'Order status chart' %}" role="img"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {# Top Products & Category Performance Row #}
+    <div class="grid gap-6 lg:grid-cols-3 mt-8 mb-8">
+        {# Chart: Top selling products (Bar Chart) #}
+        <div class="chart-container rounded-xl border bg-card p-6 shadow-sm lg:col-span-2">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold">
+                        {% trans "Top Selling Products" %}
+                    </h2>
+                    <p class="text-xs text-muted-foreground mt-1">
+                        {% trans "Products by sales volume" %}
+                    </p>
+                </div>
+                <span class="material-symbols-outlined text-purple-500">bar_chart</span>
+            </div>
+            <div class="h-80">
+                <canvas id="topProductsChart" aria-label="{% trans 'Top selling products chart' %}" role="img"></canvas>
+            </div>
+        </div>
+
+        {# Table: Top products list #}
+        <div class="rounded-xl border bg-card p-6 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold">{% trans "Best Performers" %}</h2>
+                    <p class="text-xs text-muted-foreground mt-1">{% trans "Top ranked items" %}</p>
+                </div>
+                <a href="{{ admin_urls.products_all|default:'#' }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                    {% trans "View products" %}{% if is_rtl %} ←{% else %} →{% endif %}
+                </a>
+            </div>
+            <div class="max-h-80 space-y-4 overflow-auto text-sm">
+                {% if top_selling_products %}
+                {% for product in top_selling_products %}
+                <div class="flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-accent transition-colors">
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate font-semibold text-sm">
+                            {{ product.name }}
+                        </p>
+                        <p class="text-xs text-muted-foreground mt-1">
+                            {% blocktrans %}{{ product.sales }} sales{% endblocktrans %}
+                        </p>
+                    </div>
+                    <span
+                        class="rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-3 py-1 text-xs font-bold">
+                        {{ product.stock }}
+                    </span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-8">
+                    <span class="material-symbols-outlined text-muted-foreground text-4xl">inventory</span>
+                    <p class="text-sm text-muted-foreground mt-2">
+                        {% trans "No product data available yet." %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Orders per day chart (last 7 days) #}
+    <div class="chart-container rounded-xl border bg-card p-6 shadow-sm mt-8 mb-8">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold">{% trans "Orders per Day" %}</h2>
+                <p class="text-xs text-muted-foreground mt-1">{% trans "Last 7 days" %}</p>
+            </div>
+            <a href="{{ admin_urls.orders_all|default:'#' }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                {% trans "View all orders" %}{% if is_rtl %} ←{% else %} →{% endif %}
+            </a>
+        </div>
+        <div class="h-64">
+            <canvas id="ordersPerDayChart" aria-label="{% trans 'Orders per day chart' %}" role="img"></canvas>
+        </div>
+    </div>
+
+    {# Additional Insights Section #}
+    <div class="grid gap-6 lg:grid-cols-2 mt-8 mb-8">
+        {# Low Stock Alert - link to filtered admin #}
+        <a href="{{ admin_urls.products_low_stock|default:'#' }}" class="rounded-xl border bg-card p-6 shadow-sm block hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-orange-500 dark:text-orange-400 text-2xl">warning</span>
+                    <h2 class="text-lg font-semibold">{% trans "Low Stock Alert" %}</h2>
+                </div>
+                <span class="text-sm font-medium text-orange-600 dark:text-orange-400">{% trans "View all" %}{% if is_rtl %} ←{% else %} →{% endif %}</span>
+            </div>
+            <div class="space-y-3 text-sm">
+                {% if low_stock_products %}
+                {% for product in low_stock_products %}
+                <div class="flex items-center justify-between p-2 rounded bg-orange-50 dark:bg-orange-900/20">
+                    <span class="font-medium truncate">{{ product.name }}</span>
+                    <span class="text-orange-600 dark:text-orange-400 font-bold">{{ product.stock }}</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-xs text-muted-foreground text-center py-4">{% trans "All products well stocked!" %}</p>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const locale = '{{ locale|default:"en" }}';
+        const isRtl = locale.startsWith('ar');
+        const dir = isRtl ? 'rtl' : 'ltr';
+
+        // Common chart options - Arabic/RTL support
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: 8 },
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        padding: 15,
+                        font: { size: 12, weight: '500' },
+                        pointStyle: 'circle'
+                    }
+                }
+            }
+        };
+
+        const fmt = (n) => isRtl ? n.toLocaleString('ar-EG') : n.toLocaleString();
+        const salesLabel = '{% trans "sales" %}';
+        const revenueLabel = '{% trans "Revenue" %}';
+
+        // Color palette
+        const colors = {
+            primary: 'rgb(99, 102, 241)',
+            secondary: 'rgb(139, 92, 246)',
+            success: 'rgb(34, 197, 94)',
+            warning: 'rgb(251, 146, 60)',
+            danger: 'rgb(239, 68, 68)',
+            info: 'rgb(59, 130, 246)',
+            pink: 'rgb(236, 72, 153)',
+            amber: 'rgb(245, 158, 11)',
+        };
+
+        // 1. Top Products Chart (Existing - Enhanced)
+        const topProductsLabels = JSON.parse('{{ top_products_labels_json|safe|default:"[]" }}');
+        const topProductsData = JSON.parse('{{ top_products_sales_json|safe|default:"[]" }}');
+
+        const topProductsCtx = document.getElementById('topProductsChart');
+        if (topProductsCtx) {
+            new Chart(topProductsCtx, {
+                type: 'bar',
+                data: {
+                    labels: topProductsLabels.length ? topProductsLabels : [],
+                    datasets: [{
+                        label: salesLabel,
+                        data: topProductsData.length ? topProductsData : [],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(251, 146, 60, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                        ],
+                        borderColor: [
+                            colors.primary,
+                            colors.secondary,
+                            colors.pink,
+                            colors.warning,
+                            colors.info,
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            ticks: { precision: 0, callback: v => fmt(v) }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { maxRotation: isRtl ? 0 : 45 }
+                        }
+                    },
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: { size: 14, weight: 'bold' },
+                            callbacks: {
+                                label: function (ctx) {
+                                    return fmt(ctx.parsed.y) + ' ' + salesLabel;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Revenue Trends Chart (Line Chart) - last 7 days
+        const revenueTrendsCtx = document.getElementById('revenueTrendsChart');
+        if (revenueTrendsCtx) {
+            const revenueDates = JSON.parse('{{ revenue_dates_json|safe|default:"[]" }}');
+            const revenueValues = JSON.parse('{{ revenue_values_json|safe|default:"[]" }}');
+
+            new Chart(revenueTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: revenueDates.length ? revenueDates : [],
+                    datasets: [{
+                        label: revenueLabel,
+                        data: revenueValues.length ? revenueValues : [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: colors.success,
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            ticks: { callback: v => fmt(v) }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (ctx) {
+                                    return fmt(ctx.parsed.y);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. Order Status Chart (Doughnut Chart)
+        const orderStatusCtx = document.getElementById('orderStatusChart');
+        if (orderStatusCtx) {
+            const statusLabels = JSON.parse('{{ order_status_labels_json|safe|default:"[]" }}');
+            const statusCounts = JSON.parse('{{ order_status_counts_json|safe|default:"[]" }}');
+
+            new Chart(orderStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels.length ? statusLabels : [],
+                    datasets: [{
+                        data: statusCounts.length ? statusCounts : [],
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(251, 146, 60, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                        ],
+                        borderColor: [
+                            colors.success,
+                            colors.info,
+                            colors.warning,
+                            colors.danger,
+                        ],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '65%',
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, padding: 20, font: { size: 13 } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (ctx) {
+                                    const label = ctx.label || '';
+                                    const value = ctx.parsed || 0;
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const pct = total ? ((value / total) * 100).toFixed(1) : 0;
+                                    return label + ': ' + fmt(value) + ' (' + pct + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 4. Orders per Day Chart (Bar) - last 7 days
+        const ordersPerDayCtx = document.getElementById('ordersPerDayChart');
+        if (ordersPerDayCtx) {
+            const revenueDates = JSON.parse('{{ revenue_dates_json|safe|default:"[]" }}');
+            const ordersPerDay = JSON.parse('{{ orders_per_day_json|safe|default:"[]" }}');
+            const ordersLabel = '{% trans "Orders" %}';
+
+            new Chart(ordersPerDayCtx, {
+                type: 'bar',
+                data: {
+                    labels: revenueDates.length ? revenueDates : [],
+                    datasets: [{
+                        label: ordersLabel,
+                        data: ordersPerDay.length ? ordersPerDay : [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            ticks: { precision: 0, callback: v => fmt(v) }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (ctx) {
+                                    return fmt(ctx.parsed.y) + ' ' + ordersLabel;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    })();
+</script>
+{% endblock %}

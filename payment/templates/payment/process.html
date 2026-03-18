@@ -1,0 +1,151 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Payment - LuxeStore" %}{% endblock %}
+
+{% block content %}
+<div class="min-h-full pb-10">
+    <div class="max-w-7xl mx-auto pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-black tracking-tight text-slate-900 sm:text-5xl mb-8 sm:mb-12">{% translate "Complete Your Payment" %}</h1>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 xl:gap-x-16">
+            <section aria-labelledby="order-heading" class="lg:col-span-7 xl:col-span-8">
+                <h2 id="order-heading" class="sr-only">{% translate "Order information" %}</h2>
+
+                <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-6 sm:px-10 py-10" data-aos="fade-up">
+                    <div class="mb-8 border-b border-slate-100 pb-6">
+                        <h3 class="text-xl font-black text-slate-900 mb-1">{% blocktranslate with order_id=order.id %}Order #{{ order_id }}{% endblocktranslate %}</h3>
+                        <p class="text-sm font-medium text-slate-500">{% blocktranslate with date=order.created|date:"F d, Y g:i A" %}Placed on {{ date }}{% endblocktranslate %}</p>
+                    </div>
+
+                    <div class="space-y-6 mb-8">
+                        {% for item in order.order_items.all %}
+                        <div class="flex flex-col sm:flex-row gap-6 pb-6 border-b border-slate-50 last:border-0 last:pb-0">
+                            <div class="flex-shrink-0">
+                                <div class="w-24 h-24 bg-white border border-slate-100 rounded-2xl p-1.5 shadow-sm">
+                                    {% if item.item.image %}
+                                    <img src="{{ item.item.image.url }}" alt="{{ item.item.name }}" class="w-full h-full rounded-xl object-cover">
+                                    {% else %}
+                                    <div class="w-full h-full bg-slate-50 rounded-xl flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0 flex flex-col justify-center">
+                                <h4 class="text-lg font-bold text-slate-900 mb-1">
+                                    <a href="{{ item.item.get_absolute_url }}" class="hover:text-cyan-600 transition-colors">{{ item.item.name }}</a>
+                                </h4>
+                                <p class="text-sm font-medium text-slate-500 mb-3 bg-slate-50 inline-block px-2.5 py-1 rounded-md">{{ item.item.category.name }}</p>
+                                {% if item.item.variant_specifications %}
+                                <div class="flex flex-wrap gap-1.5 mb-3">
+                                    {% for key, value in item.item.variant_specifications.items %}
+                                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ key }}: {{ value }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                                        <span>{% blocktranslate with qty=item.quantity %}Qty: {{ qty }}{% endblocktranslate %}</span>
+                                        <span class="mx-1 text-slate-300">|</span>
+                                        
+                                        {% if item.item.discount_percent > 0 %}
+                                            <span class="text-xs line-through text-slate-400 font-bold"> EGP  {{ item.item.base_price }}</span>
+                                            <span class="text-rose-600 font-bold"> EGP  {{ item.price }}</span>
+                                            <span class="ml-1 bg-rose-100 text-rose-700 text-[10px] px-1.5 py-0.5 rounded font-black tracking-wider">-{{ item.item.discount_percent }}%</span>
+                                        {% else %}
+                                            <span> EGP  {{ item.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-lg font-black text-slate-900"> EGP  {{ item.get_total_price }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{% translate "Delivery Address" %}</p>
+                            <p class="text-sm font-semibold text-slate-700 leading-relaxed">{{ order.shipping_address.address }}<br>{{ order.shipping_address.district }}, {{ order.shipping_address.zone }}<br>{{ order.shipping_address.city }}</p>
+                        </div>
+                        {% if order.shipping_address.mobile %}
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{% translate "Contact" %}</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ order.shipping_address.mobile }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <section aria-labelledby="payment-heading" class="mt-8 lg:mt-0 lg:col-span-5 xl:col-span-4">
+                <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 px-6 sm:px-8 py-8 sticky top-28" data-aos="fade-left">
+                    <h2 id="payment-heading" class="text-xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4">{% translate "Payment Summary" %}</h2>
+
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 mb-8">
+                        <dl class="space-y-3 text-sm font-medium text-slate-500">
+                            <div class="flex items-center justify-between">
+                                <dt>{% translate "Subtotal" %}</dt>
+                                <dd class="text-slate-900 font-bold"> EGP  {{ order.get_total_price }}</dd>
+                            </div>
+
+                            {% if order.coupon %}
+                            <div class="flex items-center justify-between text-emerald-600">
+                                <dt>
+                                    {% blocktranslate with code=order.coupon.code discount=order.coupon.discount %}Discount ("{{ code }}"){% endblocktranslate %}
+                                </dt>
+                                <dd class="font-bold">- EGP  {{ order.discount }}</dd>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex items-center justify-between">
+                                <dt>{% translate "Shipping" %}</dt>
+                                <dd class="text-slate-900 font-bold"> EGP  {{ order.shipping_price }}</dd>
+                            </div>
+                            
+                            <div class="border-t border-slate-200 pt-3 mt-3 flex items-center justify-between">
+                                <dt class="text-lg font-black text-slate-900">{% translate "Total to Pay" %}</dt>
+                                <dd class="text-2xl font-black text-slate-900 tracking-tight"> EGP  {{ order.get_total_price_after_discount_shipping }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <form method="post" action="{% url 'payment:proccess' %}" class="space-y-4">
+                        {% csrf_token %}
+                        
+                        <button type="submit" name="payment_method" value="paymob"
+                            class="group/btn relative w-full overflow-hidden bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-blue-600/20 hover:shadow-blue-500/40 active:scale-[0.98]">
+                            <div class="absolute inset-0 w-0 bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                            <span class="relative z-10 text-lg tracking-wide flex items-center justify-center gap-3">
+                                <svg class="w-6 h-6 transition-transform group-hover/btn:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                                {% translate "Pay with Paymob (Local)" %}
+                            </span>
+                        </button>
+
+                        <button type="submit" name="payment_method" value="stripe"
+                            class="group/btn relative w-full overflow-hidden bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-slate-900/10 hover:shadow-purple-500/25 active:scale-[0.98]">
+                            <div class="absolute inset-0 w-0 bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-500 ease-out group-hover/btn:w-full"></div>
+                            <span class="relative z-10 text-lg tracking-wide flex items-center justify-center gap-3">
+                                <svg class="w-5 h-5 transition-transform group-hover/btn:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                {% translate "Pay with Stripe (International)" %}
+                            </span>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        {% translate "Secure encrypted payments via Paymob & Stripe" %}
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        {% translate "Secure payment powered by Stripe" %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
