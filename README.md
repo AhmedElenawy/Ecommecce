@@ -1,92 +1,160 @@
 ## LuxeStore — Ecommerce backend (Django)
 
-This repository contains the **backend** for an ecommerce platform built with **Django 5.2** + PostgreSQL + Redis, with payments, shipping integrations, async background jobs, and a heavily customized admin dashboard.
+This repository contains the **backend** for an ecommerce platform built with **Django 5.2**, focused on real production flows: authentication + OTP, catalog + search, cart → order → payment, shipping integrations, background jobs, and a heavily customized admin.
 
-## 1) Auth + OTP (email verification & password reset)
+The documentation below is organized **by app**, in this order:
+`authenticate` → `store` → `cart` → `coupon` → `order` → `payment` → admin → translation.
 
-- **Authentication**
-  - Django sessions auth
-  - Custom email authentication backend: `authenticate.authentication.EmailAuthBackend`
-  - Google OAuth2 login using `social-auth-app-django` (includes `associate_by_email` pipeline step)
-- **OTP (Redis-backed)**
-  - OTPs are **securely generated**, then **hashed (SHA-256)** and stored in Redis (`otp:<email>:<purpose>`)
+## `authenticate` app (auth, OTP, social login)
+
+**Technologies used**
+- Django auth + sessions
+- Redis (direct client) for OTP storage/rate limit (`ecommerce/redis_client.py`)
+- Celery for async email sending
+- `social-auth-app-django` for Google OAuth2
+
+**Implemented flows**
+- **Custom email authentication backend**: `authenticate.authentication.EmailAuthBackend`
+- **OTP (email verification / password reset)**
+  - Secure 6-digit OTP generation
+  - OTP is **hashed (SHA-256)** and stored in Redis under `otp:<email>:<purpose>`
   - **TTL**: ~5 minutes
-  - **Rate limiting**: blocks repeated requests for ~2 minutes
-  - **Max attempts**: 3 attempts stored and enforced in Redis
-  - Sending OTP email is done asynchronously via Celery (`send_email.delay(...)`)
-- **i18n**
-  - English/Arabic support via `LocaleMiddleware` + `i18n_patterns`
-  - OTP pages/messages are localized
+  - **Rate limiting**: blocks repeated OTP requests (~2 minutes)
+  - **Brute-force protection**: max attempts (3), stored in Redis
+  - OTP email send is async: `send_email.delay(...)` (with retry policy)
+- **Google OAuth2 login**
+  - Pipeline includes `associate_by_email` so existing users can be linked by email
 
-## 2) Database (PostgreSQL)
+## `store` app (catalog, variants, search, filtering, recommendations)
 
-- PostgreSQL as primary DB (`django.db.backends.postgresql`)
-- Postgres features used:
-  - `django.contrib.postgres`
-  - Trigram extension migrations for fuzzy search (`TrigramExtension`)
-  - GIN indexes for Arabic/English name/description fields (trigram ops)
+**Technologies used**
+- PostgreSQL (`django.contrib.postgres`)
+- Postgres trigram search + indexes
+- `django-filter` for filtering
+- `django-taggit` for tagging
+- Redis for “bought together” recommendations (sorted sets)
+- `modeltranslation` for bilingual (EN/AR) model fields
+- Media handling: Pillow + easy-thumbnails
 
-## 3) Cache + sessions + Redis
-
-- **Django cache on Redis** via `django-redis`
-- **Redis-backed sessions** (Django sessions stored in cache)
-- **Direct Redis usage** via `ecommerce/redis_client.py`:
-  - OTP storage + rate limiting
-  - “Bought together” recommendations (sorted sets) in `store/recommendation.py`
-
-## 4) Pagination + search
-
-- **Pagination**
-  - Page-based pagination with Django `Paginator` (`store/search.py`)
-  - Custom **cursor pagination** helper (`store/cursor_pagination.py`)
+**Implemented flows**
+- **Products, categories, tags**
+- **Variants**
+  - `ProductVariantGroup` to group variants and compute specs/sales
+  - `Product.variant_specifications` stored as JSON
 - **Search**
-  - Postgres trigram similarity ranking for better fuzzy search (`store/search.py`)
-  - Filtering with `django-filter` (`store/filters.py`) for price/category/tags/stock and more
+  - Fuzzy search using **trigram similarity** ranking (`store/search.py`)
+  - Trigram extension migration + **GIN trigram indexes** for name/description in EN/AR
+- **Pagination**
+  - Classic Django `Paginator` + custom **cursor pagination** helper
+- **Filtering**
+  - Price/category/tags/in-stock using `django-filter` (`store/filters.py`)
+- **Recommendations**
+  - Redis sorted-set based “bought together” tracking + retrieval (`store/recommendation.py`)
 
-## 5) Background jobs: Celery + broker (RabbitMQ/Redis)
+## `cart` app (session cart)
 
-- Celery app config: `ecommerce/celery.py`
-- Implemented tasks:
-  - OTP email sending with retries (`authenticate/tasks.py`)
-  - Invoice PDF generation and email sending (`payment/tasks.py`)
-  - Bulk invoices generation + background stock release for abandoned payments (`order/tasks.py`)
-- The broker URL is expected via environment (common: RabbitMQ `amqp://...` using `CELERY_BROKER_URL`).
+**Technologies used**
+- Django sessions (stored in Redis cache)
+- Redis-backed session engine (`django.contrib.sessions.backends.cache`)
 
-## 6) Cart + orders
+**Implemented flows**
+- Session-backed cart with session key `CART_SESSION_ID = 'cart'`
 
-- Session-backed cart (`CART_SESSION_ID = 'cart'`)
-- Order lifecycle with background cancellation/stock release
-- Invoices as PDFs (WeasyPrint), both immediate and async
+## `coupon` app (discount codes + usage tracking)
 
-## 7) Payments + shipping
+**Technologies used**
+- Django models + validators
+- i18n translations in model fields/messages
 
+**Implemented flows**
+- Coupons with:
+  - Percentage discount validation
+  - Active window (`valid_from` → `valid_to`)
+  - `usage_limit` per user enforced via `CouponUsage`
+- Coupon validation raises localized errors for invalid cases
+
+## `order` app (orders, addresses, invoices, shipping)
+
+**Technologies used**
+- PostgreSQL models + query optimization patterns (`select_related`, `prefetch_related`)
+- Celery background tasks
+- WeasyPrint for PDF generation
+- Django cache (Redis) for shipping lookups
+- `django-phonenumber-field` for Egyptian phone validation
+- Bosta shipping API integration using `requests`
+
+**Implemented flows**
+- **Order lifecycle**
+  - Status flow: pending → paid → shipped/delivered or cancelled
+  - Background flow to **release stock / cancel abandoned payments** (`order/tasks.py`)
+- **Order address**
+  - Structured address fields including Bosta IDs (city/zone/district)
+- **Invoices**
+  - Single invoice PDF generation (WeasyPrint)
+  - Bulk invoices generation as a tracked file (`PdfFile`) via Celery
+- **Shipping (Bosta)**
+  - Cached lookups: cities/zones/districts (cache backed by Redis)
+  - Pricing calculator endpoint
+  - Delivery creation flow (`order/shipping.py`)
+
+## `payment` app (Stripe + Paymob, webhooks, post-payment automation)
+
+**Technologies used**
+- Stripe Python SDK (`stripe`)
+- Paymob integration using `requests`
+- Django cache (Redis) used for currency conversion caching
+- Celery for post-payment automation + invoice emailing
+
+**Implemented flows**
 - **Stripe**
   - Checkout session creation
+  - Coupon and shipping represented in the Stripe checkout data
   - Webhook endpoint wired in project URLs
-  - After-payment flow updates order + triggers invoice + recommendations
 - **Paymob**
   - Intention / unified checkout flow
   - Webhook endpoint wired in project URLs
-- **Bosta shipping integration**
-  - Cached lookups: cities/zones/districts
-  - Pricing calculator
-  - Delivery creation flow (`order/shipping.py`)
+- **Post-payment automation**
+  - Marks order paid, stores payment ID, triggers invoice sending, and updates recommendations (`payment/tasks.py`)
 
-## Admin & back-office (Unfold + custom tooling)
+## Admin (Unfold + custom back-office tooling)
 
-- Unfold-powered admin theme + customizations
-- **Custom analytics dashboard** mounted at `/admin/`:
+**Technologies used**
+- `django-unfold` for modern admin UI
+- Custom admin classes/actions/filters
+- Chart.js (dashboard charts)
+- RTL adjustments via custom CSS
+
+**What’s customized**
+- **Custom analytics dashboard** mounted at `/admin/` (`order/dashboard.py` + `templates/admin/index.html`)
   - KPI cards + multiple charts (Chart.js)
-  - Deep links into filtered admin changelists
+  - Quick links to filtered admin changelists
   - RTL-aware rendering for Arabic
-- Store admin productivity:
-  - Variant group management + “Add Variant” shortcut (clone flow)
-  - Bulk discount admin action with a custom form/template
-  - Low-stock filter
-- Orders admin productivity:
+- **Store admin productivity**
+  - Translation tabs (TabbedTranslationAdmin)
+  - Inline images
+  - Variant group management with “Add Variant” shortcut (clone flow via `copy_from_id`)
+  - Low-stock filter + bulk discount action with custom form/template
+- **Orders admin productivity**
   - Inline order items + shipping address
-  - CSV export
-  - Bulk invoice generation (async) tracked via `PdfFile`
+  - Payment link rendering, invoice actions
+  - CSV export + async bulk invoice generation tracked via `PdfFile`
+- **Users admin**
+  - Default `UserAdmin` re-registered using Unfold
+
+## Translation / i18n (project-wide)
+
+**Technologies used**
+- Django i18n: `LocaleMiddleware`, `i18n_patterns`, `gettext_lazy`
+- `django-modeltranslation` for bilingual model fields (EN/AR)
+
+**What’s implemented**
+- English + Arabic language support (including RTL in admin dashboard)
+
+## Core infrastructure (used across apps)
+
+- **Database**: PostgreSQL
+- **Cache + sessions**: Redis (`django-redis`) + cache-backed sessions
+- **Background jobs**: Celery (broker via env, commonly RabbitMQ `amqp://...` using `CELERY_BROKER_URL`)
 
 ## Local setup
 
